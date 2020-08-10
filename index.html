@@ -23,61 +23,7 @@
 <link href="./resources/font-jw/style.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="./resources/plugin/codemirror/lib/codemirror.min.css">
 <link rel="stylesheet" href="./resources/plugin/codemirror/addon/merge/merge.min.css">
-<style type="text/css">
-#main {
-    color: #666
-}
-.CodeMirror-merge-2pane > .CodeMirror-merge-pane:first-child > .CodeMirror {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-}
-
-.CodeMirror-merge-2pane > .CodeMirror-merge-pane:nth-child(3) > .CodeMirror {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-}
-.CodeMirror { 
-    line-height: 1.2;
-}
-.CodeMirror-merge {
-    border:0px !important;
-}
-.CodeMirror-merge-gap {
-    border-top:1px solid #ccc;
-    border-bottom:1px solid #ccc;
-    border-left: 0px;
-    border-right: 0px;
-    background-color:white;
-}
-@media screen and (min-width: 1300px) {
-  article { max-width: 1000px; }
-  #nav { border-right: 499px solid transparent; }
-}
-span.clicky {
-    cursor: pointer;
-    background: #d70;
-    color: white;
-    padding: 0 3px;
-    border-radius: 3px;
-}
-
- @media screen and (max-height:1080px) {
-    .CodeMirror {
-        height: 845px;
-    }
-    .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
-        height:845px;
-    }
-}
-@media screen and (max-height:800px) {
-    .CodeMirror {
-        height: 450px;
-    }
-    .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
-        height:450px;
-    }
-}
-</style>
+<link href="./resources/css/jw/compare.css" rel="stylesheet">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -118,7 +64,7 @@ span.clicky {
                 <!-- /.row -->
                 <div class="row" style="padding-top: 10px;">
                     <div class="col-md-12 col-lg-12"
-                        style="margin-left: 15px; margin-right: 15px">
+                        style="margin-left: 15px; margin-right: 15px;margin-bottom:10px;">
                             <label>
                                 <input type="radio" name="gpMode" id="rdoMode0" value="text/plain">  纯文本  
                                 <input type="radio" name="gpMode" id="rdoMode1"  value="text/html">  HTML  
@@ -126,7 +72,18 @@ span.clicky {
                                 <input type="radio" name="gpMode" id="rdoMode3" value="application/xml">  XML  
                                 <input type="radio" name="gpMode" id="rdoMode4" value="text/x-sql">  SQL
                              </label>
+                             <button id="btnGo" class="btn btn-success">美化</button>
+                    </div>
+                    <div class="col-md-12 col-lg-12"
+                        style="margin-left: 15px; margin-right: 15px;">
                              <div id=view></div>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 10px;">
+                    <div class="col-md-12 col-lg-12"
+                        style="margin-left: 15px; margin-right: 15px">
+                        <div id="divMsg" class="alert alert-success"
+                            style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -143,7 +100,13 @@ span.clicky {
     <script src="./resources/js/jquery.min.js"></script>
     <script src="./resources/plugin/codemirror/lib/codemirror.min.js"></script>
     
-    <script src="./resources/plugin/codemirror/mode/xml/xml.min.js"></script>
+    <script src="./resources/js/jsl.format.min.js"></script>
+    <script src="./resources/js/jsl.parser.min.js"></script>
+    <script src="./resources/js/jquery.format.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/fold/xml-fold.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/edit/closetag.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/edit/matchtags.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
     <script src="./resources/plugin/codemirror/mode/css/css.min.js"></script>
     <script src="./resources/plugin/codemirror/mode/javascript/javascript.min.js"></script>
     <script src="./resources/plugin/codemirror/mode/sql/sql.min.js"></script>
@@ -156,104 +119,7 @@ span.clicky {
     <!-- Bootstrap Core JavaScript -->
     <script src="./resources/js/bootstrap.min.js"></script>
     <script src="./resources/js/jw.js"></script>
-    <script type="text/javascript">
-    
-    var storageKey = 'compare.mode';
-    
-    var value="", orig1 = "", orig2 = "", dv, panes = 2, highlight = true, connect = null, collapse = false;
-    var targetMode = "text/plain";
-    function initUI() {
-      if (value == null) return;
-      var target = document.getElementById("view");
-      target.innerHTML = "";
-      dv = CodeMirror.MergeView(target, {
-        value: value,
-        origLeft: panes == 3 ? orig1 : null,
-        orig: orig2,
-        lineNumbers: true,
-        mode: targetMode,
-        highlightDifferences: highlight,
-        connect: connect,
-        collapseIdentical: collapse,
-        allowEditingOriginals:true
-      });
-    }
-
-    function toggleDifferences() {
-      dv.setShowDifferences(highlight = !highlight);
-    }
-
-    function mergeViewHeight(mergeView) {
-      function editorHeight(editor) {
-        if (!editor) return 0;
-        return editor.getScrollInfo().height;
-      }
-      return Math.max(editorHeight(mergeView.leftOriginal()),
-                      editorHeight(mergeView.editor()),
-                      editorHeight(mergeView.rightOriginal()));
-    }
-
-    function resize(mergeView) {
-      var height = mergeViewHeight(mergeView);
-      for(;;) {
-        if (mergeView.leftOriginal())
-          mergeView.leftOriginal().setSize(null, height);
-        mergeView.editor().setSize(null, height);
-        if (mergeView.rightOriginal())
-          mergeView.rightOriginal().setSize(null, height);
-
-        var newHeight = mergeViewHeight(mergeView);
-        if (newHeight >= height) break;
-        else height = newHeight;
-      }
-      mergeView.wrap.style.height = height + "px";
-    }
-    
-    $(function(){
-         $("#menuCompare").addClass("active");
-        var selected = $jw.readStorage(storageKey);
-        if(selected) {
-            $('#' + selected).attr("checked","checked");
-            targetMode = $('#' + selected).val();
-            changeMode();
-        } else {
-            $('#rdoMode0').attr("checked","checked");
-            initUI();
-        }
-        $('input[type=radio]').click(function(e){
-            var $that = $(this);
-            targetMode = $that.val();
-            changeMode();
-            var selectedId = $that.attr("id");
-            $jw.saveStorage(storageKey, selectedId);
-        });
-    });
-    
-    function changeMode() {
-        if(dv && dv.right && dv.right.diff) {
-            var diff = dv.right.diff;
-            var leftArr = [], rightArr = [];
-            var len = diff.length;
-            var line, type, content;
-            for(var i=0;i<len;i++) {
-                line = diff[i];
-                type = line[0];
-                content = line[1];
-                if(type == 0) {//EQUAL
-                    leftArr.push(content);
-                    rightArr.push(content);
-                } else if(type == -1) {//DELETE
-                    rightArr.push(content);
-                } else if(type == 1) {//INSERT
-                    leftArr.push(content);
-                }
-            }
-            value = leftArr.join('');
-            orig2 = rightArr.join('');
-        }
-        initUI();
-    }
-    </script>
+    <script src="./resources/js/compare.js"></script>
 </body>
 
 </html>

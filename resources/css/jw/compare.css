@@ -1,0 +1,53 @@
+#main {
+    color: #666
+}
+.CodeMirror-merge-2pane > .CodeMirror-merge-pane:first-child > .CodeMirror {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.CodeMirror-merge-2pane > .CodeMirror-merge-pane:nth-child(3) > .CodeMirror {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+.CodeMirror { 
+    line-height: 1.2;
+}
+.CodeMirror-merge {
+    border:0px !important;
+}
+.CodeMirror-merge-gap {
+    border-top:1px solid #ccc;
+    border-bottom:1px solid #ccc;
+    border-left: 0px;
+    border-right: 0px;
+    background-color:white;
+}
+@media screen and (min-width: 1300px) {
+  article { max-width: 1000px; }
+  #nav { border-right: 499px solid transparent; }
+}
+span.clicky {
+    cursor: pointer;
+    background: #d70;
+    color: white;
+    padding: 0 3px;
+    border-radius: 3px;
+}
+
+ @media screen and (max-height:1080px) {
+    .CodeMirror {
+        height: 845px;
+    }
+    .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
+        height:845px;
+    }
+}
+@media screen and (max-height:800px) {
+    .CodeMirror {
+        height: 450px;
+    }
+    .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
+        height:450px;
+    }
+}
