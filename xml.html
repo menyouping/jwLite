@@ -11,7 +11,7 @@
 
 <link rel="Shortcut Icon" href="./favicon.ico">
 
-<title>Jw Labs-JSON</title>
+<title>Jw Labs-XML</title>
 
 <!-- Bootstrap Core CSS -->
 <link href="./resources/css/bootstrap.min.css" rel="stylesheet">
@@ -33,10 +33,10 @@
 }
 
 @media screen and (max-height:800px) {
-        .CodeMirror {
-            height: 450px;
-        }
+    .CodeMirror {
+        height: 450px;
     }
+}
 </style>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -63,18 +63,18 @@
                 <a class="navbar-brand" href="./index.html">Jw Labs</a>
             </div>
             <div>
-				<ul class="nav navbar-nav">
-					<li id="menuJson" title="JSON格式化工具"><a href="./index.html">JSON</a>
-					</li>
-					<li id="menuXml" title="XML格式化工具"><a href="./xml.html">XML</a>
-					</li>
-					<li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a>
-					</li>
-					<li id="menuSet" title="集合处理工具"><a href="./set.html">集合</a></li>
-					<li id="menuTemplate" title="多行文本处理工具"><a
-						href="./template.html">模板</a></li>
-				</ul>
-			</div>
+                <ul class="nav navbar-nav">
+                    <li id="menuJson" title="JSON格式化工具"><a href="./index.html">JSON</a>
+                    </li>
+                    <li id="menuXml" title="XML格式化工具"><a href="./xml.html">XML</a>
+                    </li>
+                    <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a>
+                    </li>
+                    <li id="menuSet" title="集合处理工具"><a href="./set.html">集合</a></li>
+                    <li id="menuTemplate" title="多行文本处理工具"><a
+                        href="./template.html">模板</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
     <div id="wrapper">
@@ -93,7 +93,7 @@
                 <div class="row" style="padding-top: 10px;">
                     <div class="col-md-12 col-lg-12"
                         style="margin-left: 15px; margin-right: 15px">
-                             <textarea id="code" name="code" style="display: none;"></textarea>
+                        <textarea id="code" name="code" style="display: none;"></textarea>
                     </div>
                 </div>
 
@@ -116,25 +116,25 @@
 
     <!-- jQuery -->
     <script src="./resources/js/jquery.min.js"></script>
-    <script src="./resources/js/jsl.format.min.js"></script>
-    <script src="./resources/js/jsl.parser.min.js"></script>
+    <script src="./resources/js/jquery.format.min.js"></script>
     <script src="./resources/plugin/codemirror/lib/codemirror.min.js"></script>
-    <script src="./resources/plugin/codemirror/addon/edit/closebrackets.min.js"></script>
-    <script src="./resources/plugin/codemirror/addon/edit/matchbrackets.min.js"></script>
-    <script src="./resources/plugin/codemirror/mode/javascript/javascript.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/fold/xml-fold.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/edit/closetag.min.js"></script>
+    <script src="./resources/plugin/codemirror/addon/edit/matchtags.min.js"></script>
+    <script src="./resources/plugin/codemirror/mode/xml/xml.min.js"></script>
     <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="./resources/js/bootstrap.min.js"></script>
     <script src="./resources/js/jw.js"></script>
-    <script type="text/javascript">
-        var storageKey = 'json';
+    <script type="text/javascript" >
+       var storageKey = 'xml';
         $(function() {
-            $("#menuJson").addClass("active");
+            $("#menuXml").addClass("active");
             var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-                mode: "application/json",
-                matchBrackets: true,
-                autoCloseBrackets: true,
+                mode: "application/xml",
+                matchTags: true,
+                autoCloseTags:true,
                 lineNumbers: true,
                 styleActiveLine: true,
                 indentUnit:4
@@ -143,58 +143,87 @@
             editor.on('change', function(instance, changeObj) {
                 hideMsg();
             });
-            $('#btnGo').click(
-                function(e) {
-                    try {
-                        var content = editor.getValue();
-                        if(content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
-                                content = content.substring(1, content.length - 1);
-                        }
-                        jsl.parser.parse(content);
-                        content = jsl.format.formatJson(content);
-                        editor.setValue(content);
-                        $('#divMsg').removeClass('alert-danger')
-                            .addClass('alert-success')
-                            .html('JSON is valid.')
-                            .show();
-                        $jw.saveStorage(storageKey, content);
-                    } catch (exp) {
-                        var msg = exp.toString().replace(/\n/g, "<br>");
-                        $('#divMsg').removeClass('alert-success')
-                            .addClass('alert-danger')
-                            .html(msg)
-                            .show();
-                    }
-                });
-            $('#btnRaw').click(function(e) {
-                try {
-                    var content = editor.getValue();
-                    if(content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
-                        content = content.substring(1, content.length - 1);
-                    }
-                    jsl.parser.parse(content);
-                    content = unformatJson(content);
-                    editor.setValue(content);
-                    $jw.saveStorage(storageKey, content);
-                    hideMsg();
-                } catch (exp) {
-                    var msg = exp.toString().replace(/\n/g, "<br>");
+            $('#btnGo').click(function(e) {
+                var content = editor.getValue().trim();
+                var rs = validateXML(content);
+                if(rs.error_code == 1) {
                     $('#divMsg').removeClass('alert-success')
                         .addClass('alert-danger')
-                        .html(msg)
+                        .html(rs.msg)
                         .show();
+                } else {
+                    content = $.format(content,{method:'xml'});
+                    editor.setValue(content);
+                    $('#divMsg').removeClass('alert-danger')
+                    .addClass('alert-success')
+                    .html('XML is valid.')
+                    .show();
+                    $jw.saveStorage(storageKey, content);
+                }
+            });
+            $('#btnRaw').click(function(e) {
+                var content = editor.getValue().trim();
+                var rs = validateXML(content);
+                if(rs.error_code == 1) {
+                    $('#divMsg').removeClass('alert-success')
+                        .addClass('alert-danger')
+                        .html(rs.msg)
+                        .show();
+                } else {
+                    content = content.replace(/(\s*)\n(\s*)/g,'');
+                    editor.setValue(content);
+                    $('#divMsg').removeClass('alert-danger')
+                        .addClass('alert-success')
+                        .html('XML is valid.')
+                    .show();
+                    $jw.saveStorage(storageKey, content);
                 }
             });
         });
 
-        function unformatJson(json) {
-            if (typeof json === 'string') {
-                json = JSON.parse(json);
-            }
-            json = JSON.stringify(json);
-            return json.trim();
+        function validateXML(xmlContent) { 
+            //errorCode 0是xml正确，1是xml错误，2是无法验证 
+            var xmlDoc,msg,errorCode = 0; 
+            // code for IE 
+            if (window.ActiveXObject) { 
+                xmlDoc  = new ActiveXObject("Microsoft.XMLDOM"); 
+                xmlDoc.async="false"; 
+                xmlDoc.loadXML(xmlContent); 
+         
+                if(xmlDoc.parseError.errorCode!=0) 
+                { 
+                    msg ="line " + xmlDoc.parseError.line + " exists error, the detail is " + xmlDoc.parseError.reason; 
+                    errorCode = 1; 
+                } else { 
+                    msg = "XML is valid"; 
+                } 
+            } 
+            // code for Mozilla, Firefox, Opera, chrome, safari,etc. 
+            else if (document.implementation.createDocument) { 
+                var parser=new DOMParser(); 
+                xmlDoc = parser.parseFromString(xmlContent,"text/xml"); 
+                var error = xmlDoc.getElementsByTagName("parsererror"); 
+                if (error.length > 0) { 
+                    if(xmlDoc.documentElement.nodeName=="parsererror"){ 
+                        errorCode = 1; 
+                        msg = xmlDoc.documentElement.childNodes[0].nodeValue; 
+                    } else { 
+                        errorCode = 1; 
+                        msg = xmlDoc.getElementsByTagName("parsererror")[0].innerHTML; 
+                    } 
+                } else { 
+                    msg = "XML is valid"; 
+                } 
+            } else  { 
+                errorCode = 2; 
+                msg = "The web browser is not support to validate the xml"; 
+            } 
+            return { 
+                "msg":msg,  
+                "error_code":errorCode 
+            }; 
         }
-
+        
         function hideMsg() {
             $('#divMsg').removeClass('alert-danger').removeClass('alert-success').html(
                     '').hide();

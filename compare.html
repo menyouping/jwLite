@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="Jay Zhang">
+
+<link rel="Shortcut Icon" href="./favicon.ico">
+
+<title>Jw Labs-文本比较</title>
+
+<!-- Bootstrap Core CSS -->
+<link href="./resources/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="./resources/css/sb-admin.min.css" rel="stylesheet">
+
+<!-- Custom Fonts -->
+<link href="./resources/font-jw/style.css" rel="stylesheet"
+	type="text/css">
+<link rel="stylesheet"
+	href="./resources/plugin/codemirror/lib/codemirror.min.css">
+<link rel="stylesheet"
+	href="./resources/plugin/codemirror/addon/merge/merge.min.css">
+<link href="./resources/css/jw/compare.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+	<!-- Navigation -->
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target=".navbar-ex1-collapse">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="./index.html">Jw Labs</a>
+			</div>
+			<div>
+				<ul class="nav navbar-nav">
+                    <li id="menuJson" title="JSON格式化工具"><a href="./index.html">JSON</a>
+                    </li>
+                    <li id="menuXml" title="XML格式化工具"><a href="./xml.html">XML</a>
+                    </li>
+                    <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a>
+                    </li>
+                    <li id="menuSet" title="集合处理工具"><a href="./set.html">集合</a></li>
+                    <li id="menuTemplate" title="多行文本处理工具"><a
+                        href="./template.html">模板</a></li>
+                </ul>
+			</div>
+		</div>
+	</nav>
+
+	<div id="wrapper">
+		<div id="page-wrapper">
+
+			<div class="container-fluid">
+				<!-- /.row -->
+				<div class="row" style="padding-top: 10px;">
+					<div class="col-md-12 col-lg-12"
+						style="margin-left: 15px; margin-right: 15px; margin-bottom: 10px;">
+						<label> <input type="radio" name="gpMode" id="rdoMode0"
+							value="text/plain"> 纯文本 <input type="radio" name="gpMode"
+							id="rdoMode1" value="text/html"> HTML <input type="radio"
+							name="gpMode" id="rdoMode2" value="javascript"> JS /JSON
+							<input type="radio" name="gpMode" id="rdoMode3"
+							value="application/xml"> XML <input type="radio"
+							name="gpMode" id="rdoMode4" value="text/x-sql"> SQL
+						</label>
+						<button id="btnGo" class="btn btn-success">美化</button>
+					</div>
+					<div class="col-md-12 col-lg-12"
+						style="margin-left: 15px; margin-right: 15px;">
+						<div id=view></div>
+					</div>
+				</div>
+				<div class="row" style="padding-top: 10px;">
+					<div class="col-md-12 col-lg-12"
+						style="margin-left: 15px; margin-right: 15px">
+						<div id="divMsg" class="alert alert-success"
+							style="display: none;"></div>
+					</div>
+				</div>
+			</div>
+			<!-- /.container-fluid -->
+
+		</div>
+		<!-- /#page-wrapper -->
+
+	</div>
+
+	<!-- /#wrapper -->
+
+	<!-- jQuery -->
+	<script src="./resources/js/jquery.min.js"></script>
+	<script src="./resources/plugin/codemirror/lib/codemirror.min.js"></script>
+
+	<script src="./resources/js/jsl.format.min.js"></script>
+	<script src="./resources/js/jsl.parser.min.js"></script>
+	<script src="./resources/js/jquery.format.min.js"></script>
+	<script src="./resources/plugin/codemirror/addon/fold/xml-fold.min.js"></script>
+	<script src="./resources/plugin/codemirror/addon/edit/closetag.min.js"></script>
+	<script src="./resources/plugin/codemirror/addon/edit/matchtags.min.js"></script>
+	<script
+		src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
+	<script src="./resources/plugin/codemirror/mode/css/css.min.js"></script>
+	<script
+		src="./resources/plugin/codemirror/mode/javascript/javascript.min.js"></script>
+	<script src="./resources/plugin/codemirror/mode/sql/sql.min.js"></script>
+	<script src="./resources/plugin/codemirror/mode/xml/xml.min.js"></script>
+	<script src="./resources/plugin/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+	<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script> -->
+	<script src="./resources/js/diff_match_patch.js"></script>
+	<script src="./resources/plugin/codemirror/addon/merge/merge.min.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="./resources/js/bootstrap.min.js"></script>
+	<script src="./resources/js/jw.js"></script>
+	<script src="./resources/js/compare.js"></script>
+</body>
+
+</html>
