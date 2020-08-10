@@ -17,6 +17,7 @@ function initUI() {
         collapseIdentical: collapse,
         allowEditingOriginals: true
     });
+    resize(dv);
 }
 
 function toggleDifferences() {
@@ -25,7 +26,7 @@ function toggleDifferences() {
 
 function mergeViewHeight(mergeView) {
     function editorHeight(editor) {
-        if (!editor) return 0;
+        if (!editor) return document.body.clientHeight - 100;
         return editor.getScrollInfo().height;
     }
     return Math.max(editorHeight(mergeView.leftOriginal()),
@@ -35,16 +36,20 @@ function mergeViewHeight(mergeView) {
 
 function resize(mergeView) {
     var height = mergeViewHeight(mergeView);
+    height = Math.max(height, 500);
     for (; ;) {
-        if (mergeView.leftOriginal())
+        if (mergeView.leftOriginal()) {
             mergeView.leftOriginal().setSize(null, height);
+        }
         mergeView.editor().setSize(null, height);
-        if (mergeView.rightOriginal())
+        if (mergeView.rightOriginal()) {
             mergeView.rightOriginal().setSize(null, height);
+        }
 
         var newHeight = mergeViewHeight(mergeView);
-        if (newHeight >= height) break;
-        else height = newHeight;
+        if (newHeight >= height) {
+            break;
+        } else { height = newHeight };
     }
     mergeView.wrap.style.height = height + "px";
 }
@@ -73,12 +78,15 @@ $(function () {
 });
 
 function beautify(content) {
+    if (!content) {
+        return content;
+    }
     var selection = $('[name=gpMode]:checked').val();
-    if(selection == 'javascript') {
+    if (selection == 'javascript') {
         return beautifyJSON(content);
     }
-    if(selection == 'application/xml') {
-        return $.format(content,{method:'xml'});
+    if (selection == 'application/xml') {
+        return $.format(content, { method: 'xml' });
     }
 }
 
