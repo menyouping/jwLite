@@ -92,8 +92,11 @@ function beautify(content) {
 
 function beautifyJSON(content) {
     try {
-        if (content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
+        if (content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
             content = content.substring(1, content.length - 1);
+        }
+        if(content.indexOf("[") == 0 && content.indexOf("}") == content.length - 1 && content.indexOf("]") < content.length -1) {
+        	content = content.substring(content.indexOf("]") + 1);
         }
         jsl.parser.parse(content);
         content = jsl.format.formatJson(content);
