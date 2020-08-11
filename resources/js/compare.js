@@ -26,7 +26,7 @@ function toggleDifferences() {
 
 function mergeViewHeight(mergeView) {
     function editorHeight(editor) {
-        if (!editor) return document.body.clientHeight - 100;
+        if (!editor) return document.body.clientHeight - 150;
         return editor.getScrollInfo().height;
     }
     return Math.max(editorHeight(mergeView.leftOriginal()),
@@ -36,7 +36,7 @@ function mergeViewHeight(mergeView) {
 
 function resize(mergeView) {
     var height = mergeViewHeight(mergeView);
-    height = Math.max(height, 500);
+    height = Math.max(height, 450);
     for (; ;) {
         if (mergeView.leftOriginal()) {
             mergeView.leftOriginal().setSize(null, height);
@@ -95,10 +95,22 @@ function beautifyJSON(content) {
         if (content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
             content = content.substring(1, content.length - 1);
         }
-        if(content.indexOf("[") == 0 && content.indexOf("}") == content.length - 1 && content.indexOf("]") < content.length -1) {
-        	content = content.substring(content.indexOf("]") + 1);
+        if (content.indexOf("[") == 0 && content.indexOf("}") == content.length - 1 && content.indexOf("]") < content.length - 1) {
+            content = content.substring(content.indexOf("]") + 1);
         }
         jsl.parser.parse(content);
+        if ($('#chkIgnore:checked').val() == 'on') {
+            var jsonObj = JSON.parse(content);
+            if (Array.isArray(jsonObj)) {
+                var arr = jsonObj;
+                for (var item in arr) {
+                    ignoreFields(arr[item]);
+                }
+            } else {
+                ignoreFields(jsonObj);
+            }
+            content = JSON.stringify(jsonObj);
+        }
         content = jsl.format.formatJson(content);
         $('#divMsg').removeClass('alert-danger')
             .addClass('alert-success')
@@ -111,6 +123,23 @@ function beautifyJSON(content) {
             .addClass('alert-danger')
             .html(msg)
             .show();
+    }
+}
+
+function ignoreFields(jsonObj) {
+    if (!jsonObj) {
+        return;
+    }
+    var fields = ["creator", "gmtCreate", "modifier", "gmtModified","isDeleted"];
+    for (var key in jsonObj) {
+        if (fields.indexOf(key) > -1) {
+            delete jsonObj[key];
+        } else if (Array.isArray(jsonObj[key])) {
+            var arr = jsonObj[key];
+            for (var item in arr) {
+                ignoreFields(arr[item]);
+            }
+        }
     }
 }
 
