@@ -112,10 +112,6 @@ function beautifyJSON(content) {
             content = JSON.stringify(jsonObj);
         }
         content = jsl.format.formatJson(content);
-        $('#divMsg').removeClass('alert-danger')
-            .addClass('alert-success')
-            .html('JSON is valid.')
-            .show();
     } catch (exp) {
         var msg = exp.toString().replace(/\n/g, "<br>");
         $('#divMsg').removeClass('alert-success')
@@ -161,6 +157,11 @@ function changeMode() {
             } else if (type == 1) {//INSERT
                 leftArr.push(content);
             }
+        }
+        if (content && $('[name=gpMode]:checked').val() == 'javascript') {
+            $('#divMsg').removeClass('alert-danger')
+            .addClass('alert-success')
+            .html('')
         }
         value = beautify(leftArr.join(''));
         orig2 = beautify(rightArr.join(''));
