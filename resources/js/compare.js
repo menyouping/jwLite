@@ -1,4 +1,4 @@
-var storageKey = 'compare.mode';
+var storageKey = 'compare.mode', storageKey1 = 'compare.left', storageKey2 = 'compare.right';
 
 var value = "", orig1 = "", orig2 = "", dv, panes = 2, highlight = true, connect = null, collapse = false;
 var targetMode = "text/plain";
@@ -7,9 +7,9 @@ function initUI() {
     var target = document.getElementById("view");
     target.innerHTML = "";
     dv = CodeMirror.MergeView(target, {
-        value: value,
+        value: value || $jw.readStorage(storageKey1) || '',
         origLeft: panes == 3 ? orig1 : null,
-        orig: orig2,
+        orig: orig2  || $jw.readStorage(storageKey2) || '',
         lineNumbers: true,
         mode: targetMode,
         highlightDifferences: highlight,
@@ -88,6 +88,7 @@ function beautify(content) {
     if (selection == 'application/xml') {
         return $.format(content, { method: 'xml' });
     }
+    return content;
 }
 
 function beautifyJSON(content) {
@@ -164,7 +165,10 @@ function changeMode() {
             .html('')
         }
         value = beautify(leftArr.join(''));
+        $jw.saveStorage(storageKey1, value);
         orig2 = beautify(rightArr.join(''));
+        $jw.saveStorage(storageKey2, orig2);
+
     }
     initUI();
 }
