@@ -116,7 +116,6 @@ function beautifyJSON(content) {
             .addClass('alert-success')
             .html('JSON is valid.')
             .show();
-        return content;
     } catch (exp) {
         var msg = exp.toString().replace(/\n/g, "<br>");
         $('#divMsg').removeClass('alert-success')
@@ -124,6 +123,7 @@ function beautifyJSON(content) {
             .html(msg)
             .show();
     }
+    return content;
 }
 
 function ignoreFields(jsonObj) {
