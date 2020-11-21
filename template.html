@@ -91,10 +91,26 @@
                     <div class="col-md-5 col-lg-5">
                         <label>处理器B</label>
                         <input type="radio" name="method" value="TEMPLATE" checked>模板&nbsp;&nbsp;
-                        <input type="radio" name="method" value="FUNCTION">函数&nbsp;&nbsp;
-                        <button id="btnTrim" class="btn btn-default">去空格</button>
-                        <button id="btnRemoveLine" class="btn btn-default">去行号</button>
-                        <button id="btnHandleUrl" title="编码网址参数中的JSON数据" class="btn btn-default">处理网址</button>
+                        <input type="radio" name="method" value="FUNCTION">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">函数
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="#" id="btnTrim">去空格</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="btnRemoveLine">去行号</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="btnHandleUrl" title="编码网址参数中的JSON数据">处理网址</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="btnHandleProperty" title="配置文件美化">处理Property</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="col-md-1 col-lg-1">
                         <label>&nbsp;</label>
@@ -204,6 +220,11 @@
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
             editor1.setValue("function beautify(line, i) {\n    return encodeURI(line.replace(/%22/g,'\"'));\n}");
         });
+        $('#btnHandleProperty').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue("function beautify(line, i) {\n    if(!line || line.trim().indexOf('#')==0) {\n        return line;\n    }\n    return line.trim().split(\/\\s*=\\s*\/g).join('=');\n}\n");
+        });
+        
         $('#btnTemplate').click(function(e){
             $('#txtResultTitle').html('结果');
             $('#btnCopy').show();
