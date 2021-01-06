@@ -355,14 +355,14 @@
         if(!content) {
             return content;
         }
-        var rs = handle(content);
-        var len = rs.list;
+        var arr = content.split('\n');
+        var len = arr.length;
         for(var i=0;i<len;i++) {
-           if(rs.list[i].trim().length == 0){
-              delete rs.list[i];
+           if(arr[i].trim().length == 0){
+              delete arr[i];
            }   
         }
-        return rs.list.join('\n');
+        return arr.join('\n');
     }
     
     function handle(content) {
