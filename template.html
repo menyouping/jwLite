@@ -85,6 +85,7 @@
                     <div class="col-md-3 col-lg-3">
                         <label>源数据A</label>
                         <button id="btnUnique0" class="btn btn-danger">去重</button>
+                        <button id="btnEmptyLine" class="btn btn-danger">去空行</button>
                         <button id="btnAsc0" class="btn btn-default">升序</button>
                         <button id="btnDesc0" class="btn btn-default">降序</button>
                     </div>
@@ -273,6 +274,12 @@
             editor0.setValue(rs);
             $jw.saveStorage(storageKey0, rs);
         });
+        $('#btnEmptyLine').click(function(e){
+            var content1 = editor1.getValue();
+            var rs = removeEmptyLine(content1);
+            editor1.setValue(rs);
+            $jw.saveStorage(storageKey1, rs);
+        });
         $('#btnUnique1').click(function(e){
             var content1 = editor1.getValue();
             var rs = unique(content1);
@@ -341,6 +348,20 @@
             return content;
         }
         var rs = handle(content);
+        return rs.list.join('\n');
+    }
+        
+    function removeEmptyLine(content) {
+        if(!content) {
+            return content;
+        }
+        var rs = handle(content);
+        var len = rs.list;
+        for(var i=0;i<len;i++) {
+           if(rs.list[i].trim().length == 0){
+              delete rs.list[i];
+           }   
+        }
         return rs.list.join('\n');
     }
     
