@@ -357,7 +357,7 @@
         }
         var arr = content.split('\n');
         var len = arr.length;
-        for(var i=0;i<len;i++) {
+        for(var i=len-1; i>=0; i--) {
            if(arr[i].trim().length == 0){
               delete arr[i];
            }   
