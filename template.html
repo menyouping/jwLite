@@ -359,7 +359,7 @@
         var len = arr.length;
         for(var i=len-1; i>=0; i--) {
            if(arr[i].trim().length == 0){
-              delete arr[i];
+              arr.splice(i,1);
            }   
         }
         return arr.join('\n');
