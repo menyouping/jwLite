@@ -206,24 +206,24 @@
             if($that.val() == "TEMPLATE") {
                 editor1.setValue("{{i}}.{{line}}");
             } else{
-                editor1.setValue("function beautify(line, i) {\n    return line;\n}");
+                editor1.setValue("function beautify(list, line, i) {\n    return line;\n}");
             }
         });
         $('#btnTrim').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(line, i) {\n    return line.trim();\n}");
+            editor1.setValue("function beautify(list, line, i) {\n    return line.trim();\n}");
         });
         $('#btnRemoveLine').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(line, i) {\n    return line.replace(/^\\d+\\./,'');\n}");
+            editor1.setValue("function beautify(list, line, i) {\n    return line.replace(/^\\d+\\./,'');\n}");
         });
         $('#btnHandleUrl').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(line, i) {\n    return encodeURI(line.replace(/%22/g,'\"'));\n}");
+            editor1.setValue("function beautify(list, line, i) {\n    return encodeURI(line.replace(/%22/g,'\"'));\n}");
         });
         $('#btnHandleProperty').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(line, i) {\n    if(!line || line.trim().indexOf('#')==0) {\n        return line;\n    }\n    return line.trim().split(\/\\s*=\\s*\/g).join('=');\n}\n");
+            editor1.setValue("function beautify(list, line, i) {\n    if(!line || line.trim().indexOf('#')==0) {\n        return line;\n    }\n    return line.trim().split(\/\\s*=\\s*\/g).join('=');\n}\n");
         });
         
         $('#btnTemplate').click(function(e){
@@ -246,7 +246,7 @@
                     if(method == "TEMPLATE") {
                         for(var i = 0;i < len; i++) {
                             line = list0[i];
-                            list2.push(tpl.replaceAll("{{line}}",line).replaceAll("{{i}}",(i+1)));
+                            list2.push(tpl.replaceAll("{{line}}",line).replaceAll("{{i}}",(i)));
                         }
                     } else{
                         try {
@@ -258,7 +258,7 @@
                         }
                         for(var i = 0;i < len; i++) {
                             line = list0[i];
-                            list2.push(beautify(line, i + 1));
+                            list2.push(beautify(list0, line, i));
                         }
                     }
                 
