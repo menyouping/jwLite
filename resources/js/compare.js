@@ -156,11 +156,15 @@ function changeMode() {
                 leftArr.push(content);
                 rightArr.push(content);
             } else if (type == -1) {//DELETE
-                if(!ignoreWhiteSpace || content.trim()) {
+                if(ignoreWhiteSpace) {
+                    rightArr.push(content.trim());
+                } else {
                     rightArr.push(content);
                 }
             } else if (type == 1) {//INSERT
-                if(!ignoreWhiteSpace || content.trim()) {
+                if(ignoreWhiteSpace) {
+                    leftArr.push(content.trim());
+                } else {
                     leftArr.push(content);
                 }
             }
