@@ -146,6 +146,8 @@ function changeMode() {
         var leftArr = [], rightArr = [];
         var len = diff.length;
         var line, type, content;
+
+        var ignoreWhiteSpace = $('#chkIgnoreWhiteSpace:checked').val() == 'on';
         for (var i = 0; i < len; i++) {
             line = diff[i];
             type = line[0];
@@ -154,9 +156,13 @@ function changeMode() {
                 leftArr.push(content);
                 rightArr.push(content);
             } else if (type == -1) {//DELETE
-                rightArr.push(content);
+                if(!ignoreWhiteSpace || content.trim()) {
+                    rightArr.push(content);
+                }
             } else if (type == 1) {//INSERT
-                leftArr.push(content);
+                if(!ignoreWhiteSpace || content.trim()) {
+                    leftArr.push(content);
+                }
             }
         }
         if (content && $('[name=gpMode]:checked').val() == 'javascript') {
