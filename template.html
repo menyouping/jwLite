@@ -108,6 +108,9 @@
                                     <a href="#" id="btnHandleUrl" title="编码网址参数中的JSON数据">处理网址</a>
                                 </li>
                                 <li>
+                                    <a href="#" id="btnSql2Json" title="Insert Sql语句转为JSON">Insert Sql转JSON</a>
+                                </li>
+                                <li>
                                     <a href="#" id="btnHandleProperty" title="配置文件美化">处理Property</a>
                                 </li>
                             </ul>
@@ -161,6 +164,54 @@
     <script src="./resources/plugin/codemirror/mode/javascript/javascript.min.js"></script>
     <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
     <script src="./resources/js/jw.js"></script>
+    <script type="text/plain" id="template_trim">
+function beautify(list, line, i) {
+    return line.trim();
+}
+    </script>
+    <script type="text/plain" id="template_removeline">
+function beautify(list, line, i) {
+    return line.replace(/^\d+\./,'');
+}
+    </script>
+    <script type="text/plain" id="template_handleurl">
+function beautify(list, line, i) {
+    return encodeURI(line.replace(/%22/g,'"'));
+}
+    </script>
+    <script type="text/plain" id="template_sql2json">
+function beautify(list, line, i) {
+    if (!line || !line.includes('(')) {
+        return line;
+    }
+
+    var fields = line.substring(line.indexOf('(') + 1, line.indexOf(')'));
+    var values = line.substring(line.lastIndexOf('(') + 1, line.lastIndexOf(')'));
+    var replacedFields = fields.replace(/`/g, '');
+    var replacedValues = values.replace(/'/g, '"').trim();
+    var fieldsArr = replacedFields.split(',');
+    var valuesArr = replacedValues.split(',');
+    var len = fieldsArr.length;
+    var sb = [];
+    sb.push('{');
+    for (var j = 0; j < len; j++) {
+        sb.push('"', fieldsArr[j], '":', valuesArr[j]);
+        if (j < len - 1) {
+            sb.push(',');
+        }
+    }
+    sb.push('}');
+    return sb.join('');
+}
+    </script>
+    <script type="text/plain" id="template_handleproperty">
+function beautify(list, line, i) {
+    if(!line || line.trim().indexOf('#')==0) {
+        return line;
+    }
+    return line.trim().split(/\s*=\s*/g).join('=');
+}
+    </script>
     <script type="text/javascript">
     var editor0, editor1, editor2;
     var storageKey0 = 'tpl.edit0',storageKey1 = 'tpl.edit1', tplMethod = 'tpl.method';
@@ -211,21 +262,25 @@
         });
         $('#btnTrim').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(list, line, i) {\n    return line.trim();\n}");
+            editor1.setValue($('#template_trim').text().trim());
         });
         $('#btnRemoveLine').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(list, line, i) {\n    return line.replace(/^\\d+\\./,'');\n}");
+            editor1.setValue($('#template_removeline').text().trim());
         });
         $('#btnHandleUrl').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(list, line, i) {\n    return encodeURI(line.replace(/%22/g,'\"'));\n}");
+            editor1.setValue($('#template_handleurl').text().trim());
+        });
+        $('#btnSql2Json').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue($('#template_sql2json').text().trim());
         });
         $('#btnHandleProperty').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
-            editor1.setValue("function beautify(list, line, i) {\n    if(!line || line.trim().indexOf('#')==0) {\n        return line;\n    }\n    return line.trim().split(\/\\s*=\\s*\/g).join('=');\n}\n");
+            editor1.setValue($('#template_handleproperty').text().trim());
         });
-        
+
         $('#btnTemplate').click(function(e){
             $('#txtResultTitle').html('结果');
             $('#btnCopy').show();
