@@ -98,11 +98,13 @@ function beautifyJSON(content) {
         }
         var index0 = content.indexOf("[");
         var index1 = content.indexOf("{");
-        if(index0 != 0 && index1 != 0) {
-            if(index0 > -1 || index1 > -1) {
-                content = content.substring(Math.max(index0, index1));
-            }
-        }
+        if(index0 > -1 && index1 > -1) {
+            content = content.substring(Math.min(index0, index1));
+        } else if(index0 > -1 ) {
+            content = content.substring(index0);
+        } else if(index1 > -1 ) {
+            content = content.substring(index1);
+        } 
         if (content.indexOf("[") == 0 && content.indexOf("}") == content.length - 1 && content.indexOf("]") < content.length - 1) {
             content = content.substring(content.indexOf("]") + 1);
         }
