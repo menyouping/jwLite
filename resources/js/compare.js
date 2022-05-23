@@ -96,6 +96,13 @@ function beautifyJSON(content) {
         if (content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
             content = content.substring(1, content.length - 1);
         }
+        var index0 = content.indexOf("[");
+        var index1 = content.indexOf("{");
+        if(index0 != 0 && index1 != 0) {
+            if(index0 > -1 || index1 > -1) {
+                content = content.substring(Math.max(index0, index1));
+            }
+        }
         if (content.indexOf("[") == 0 && content.indexOf("}") == content.length - 1 && content.indexOf("]") < content.length - 1) {
             content = content.substring(content.indexOf("]") + 1);
         }
