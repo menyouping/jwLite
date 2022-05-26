@@ -116,6 +116,9 @@
                                 <li>
                                     <a href="#" id="btnHandleProperty" title="配置文件美化">处理Property</a>
                                 </li>
+                                <li>
+                                    <a href="#" id="btnExtract" title="提取更新日志">提取更新日志</a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -215,6 +218,20 @@ function beautify(list, line, i) {
     return line.trim().split(/\s*=\s*/g).join('=');
 }
     </script>
+    <script type="text/plain" id="template_extract">
+function beautify(list, line, i) {
+    if(!line) {
+        return "";
+    }
+    if(line.indexOf('MYSQL_UPDATE')<0 
+        && line.indexOf('MYSQL_INSERT')<0 
+        && line.indexOf('MYSQL_DELETE')<0
+        && line.indexOf('MYSQL_LOGICAL_DELETE')<0) {
+        return "";
+    }
+    return line.substring(line.indexOf('MYSQL'));
+}
+    </script>
     <script type="text/javascript">
     var editor0, editor1, editor2;
     var storageKey0 = 'tpl.edit0',storageKey1 = 'tpl.edit1', tplMethod = 'tpl.method';
@@ -283,6 +300,11 @@ function beautify(list, line, i) {
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
             editor1.setValue($('#template_handleproperty').text().trim());
         });
+        $('#btnExtract').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue($('#template_extract').text().trim());
+        });
+
 
         $('#btnTemplate').click(function(e){
             $('#txtResultTitle').html('结果');
