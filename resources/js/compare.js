@@ -74,6 +74,9 @@ $(function () {
     });
     $('#btnGo').click(function (e) {
         changeMode();
+    });
+    $('#btnMerge').click(function (e) {
+        mergeContent();
     })
 });
 
@@ -132,6 +135,41 @@ function beautifyJSON(content) {
     return content;
 }
 
+function mergeContent() {
+    changeMode();
+    if (dv && dv.right && dv.right.diff) {
+        var diff = dv.right.diff;
+        var leftArr = [], rightArr = [];
+        var len = diff.length;
+        var line, type, content;
+
+        for (var i = 0; i < len; i++) {
+            line = diff[i];
+            type = line[0];
+            content = line[1];
+            if (type == 0) {//EQUAL
+                leftArr.push(content);
+                rightArr.push(content);
+            } else if (type == -1) {//DELETE
+                rightArr.push(content);
+            } else if (type == 1) {//INSERT
+                leftArr.push(content);
+            }
+        }
+        var leftJSON = JSON.parse(leftArr.join(''));
+        var rightJSON = JSON.parse(rightArr.join(''));
+        for(var p in rightJSON) {
+            leftJSON[p] = rightJSON[p];
+        }
+        value = beautify(JSON.stringify(leftJSON));
+        $jw.saveStorage(storageKey1, value);
+        orig2 = beautify("{}");
+        $jw.saveStorage(storageKey2, orig2);
+
+    }
+    initUI();
+}
+
 function ignoreFields(jsonObj) {
     if (!jsonObj) {
         return;
@@ -150,6 +188,11 @@ function ignoreFields(jsonObj) {
 }
 
 function changeMode() {
+    if ($('[name=gpMode]:checked').val() == 'javascript') {
+        $('#btnMerge').show();
+    } else {
+        $('#btnMerge').hide();
+    }
     if (dv && dv.right && dv.right.diff) {
         var diff = dv.right.diff;
         var leftArr = [], rightArr = [];
@@ -181,7 +224,7 @@ function changeMode() {
         if (content && $('[name=gpMode]:checked').val() == 'javascript') {
             $('#divMsg').removeClass('alert-danger')
             .addClass('alert-success')
-            .html('')
+            .html('');
         }
         value = beautify(leftArr.join(''));
         $jw.saveStorage(storageKey1, value);
