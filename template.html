@@ -114,6 +114,9 @@
                                     <a href="#" id="btnSql2Json" title="Insert Sql语句转为JSON">Sql转JSON</a>
                                 </li>
                                 <li>
+                                    <a href="#" id="btnHandleSwagger" title="Swagger转注释">Swagger转注释</a>
+                                </li>
+                                <li>
                                     <a href="#" id="btnHandleProperty" title="配置文件美化">处理Property</a>
                                 </li>
                                 <li>
@@ -232,6 +235,19 @@ function beautify(list, line, i) {
     return line.substring(line.indexOf('MYSQL'));
 }
     </script>
+    <script type="text/plain" id="template_swagger">
+function beautify(list, line, i) {
+    if(!line) {
+        return "";
+    }
+    if(line.indexOf('@ApiModelProperty') < 0) {
+        return line;
+    }
+    line= line.trim().replace(/@ApiModelProperty\(value\s*=\s*"/g,'\t/**\n\t * ');
+    line = line.substring(0, line.indexOf('"')) + "\n\t **/";
+    return line;
+}
+    </script>
     <script type="text/javascript">
     var editor0, editor1, editor2;
     var storageKey0 = 'tpl.edit0',storageKey1 = 'tpl.edit1', tplMethod = 'tpl.method';
@@ -303,6 +319,10 @@ function beautify(list, line, i) {
         $('#btnExtract').click(function(e){
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
             editor1.setValue($('#template_extract').text().trim());
+        });
+        $('#btnHandleSwagger').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue($('#template_swagger').text().trim());
         });
 
 
