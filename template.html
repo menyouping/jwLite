@@ -70,11 +70,12 @@
             <div>
                 <ul class="nav navbar-nav">
                     <li id="menuJson" title="JSON格式化工具"><a href="./index.html">JSON</a></li>
+                    <li id="menuJSONCompare" title="JSON比较工具"><a href="./json_compare.html">JSON运算</a></li>
+                    <li id="menuArray" title="JSON数组处理工具"><a href="./array.html">JSON数组</a></li>
                     <li id="menuXml" title="XML格式化工具"><a href="./xml.html">XML</a></li>
-                    <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a></li>
-                    <li id="menuSet" title="集合处理工具"><a href="./set.html">集合</a></li>
+                    <li id="menuSet" title="集合处理工具"><a href="./set.html">集合运算</a></li>
                     <li id="menuTemplate" title="多行文本处理工具"><a href="./template.html">文本处理</a></li>
-                    <li id="menuAarray" title="JSON数组处理工具"><a href="./array.html">JSON数组</a></li>
+                    <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a></li>
                 </ul>
             </div>
         </div>
@@ -91,6 +92,7 @@
                         <button id="btnEmptyLine" class="btn btn-danger">去空行</button>
                         <button id="btnAsc0" class="btn btn-default">升序</button>
                         <button id="btnDesc0" class="btn btn-default">降序</button>
+                        <button id="btnReverse" class="btn btn-default">逆序</button>
                     </div>
                     <div class="col-md-5 col-lg-5">
                         <label>处理器B</label>
@@ -121,6 +123,15 @@
                                 </li>
                                 <li>
                                     <a href="#" id="btnExtract" title="提取更新日志">提取更新日志</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="btnTax" title="海外计税请求">海外计税请求</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="btnAvg" title="求平均值">求平均值</a>
+                                </li>
+                                <li>
+                                    <a href="#" id="btnResultMap" title="生成Mybatis ResultMap">Mybatis ResultMap</a>
                                 </li>
                             </ul>
                         </div>
@@ -223,16 +234,15 @@ function beautify(list, line, i) {
     </script>
     <script type="text/plain" id="template_extract">
 function beautify(list, line, i) {
-    if(!line) {
-        return "";
+    var index = line.indexOf('QUERY_SQL');
+    if(index < 0) {
+        return '';
     }
-    if(line.indexOf('MYSQL_UPDATE')<0 
-        && line.indexOf('MYSQL_INSERT')<0 
-        && line.indexOf('MYSQL_DELETE')<0
-        && line.indexOf('MYSQL_LOGICAL_DELETE')<0) {
-        return "";
-    }
-    return line.substring(line.indexOf('MYSQL'));
+    line = line.substring(index).replace('QUERY_SQL|','-- ');
+    var start = line.indexOf("|");
+    var end = line.indexOf(' from ');
+    line = line.replace(line.substring(start, end), "\nselect *") +";";
+    return line;
 }
     </script>
     <script type="text/plain" id="template_swagger">
@@ -246,6 +256,71 @@ function beautify(list, line, i) {
     line= line.trim().replace(/@ApiModelProperty\(value\s*=\s*"/g,'\t/**\n\t * ');
     line = line.substring(0, line.indexOf('"')) + "\n\t **/";
     return line;
+}
+    </script>
+    <script type="text/plain" id="template_avg">
+        var sum = 0;
+function beautify(list, line, i) {
+    sum += parseFloat(line);
+    if(i==list.length-1) {
+        return sum/list.length;
+    }
+    return false;
+}
+    </script>
+    <script type="text/plain" id="template_result_map">
+function beautify(list, line, i) {
+    var arr = line.split('	');
+    if(arr[1].indexOf('datetime') > -1) {
+        line = '<result column="{colName}" jdbcType="TIMESTAMP" property="{fieldName}"/>';
+    } else if(arr[1].indexOf('varchar') > -1) {
+        line = '<result column="{colName}" jdbcType="VARCHAR" property="{fieldName}"/>';
+    } else if(arr[1].indexOf('tinyint') > -1) {
+        line = '<result column="{colName}" jdbcType="BOOLEAN" property="{fieldName}"/>';
+    } else if(arr[1].indexOf('int') > -1) {
+        line = '<result column="{colName}" jdbcType="INTEGER" property="{fieldName}"/>';
+    } else if(arr[1].indexOf('decimal') > -1) {
+        line = '<result column="{colName}" jdbcType="DECIMAL" property="{fieldName}"/>';
+    }
+    return line.replace('{colName}', arr[0]).replace('{fieldName}',toHump(arr[0]))
+}
+
+function toHump(name) {
+    return name.replace(/\_(\w)/g, function(all, letter){
+        return letter.toUpperCase();
+    });
+}
+    </script>
+
+    <script type="text/plain" id="template_tax">
+function beautify(list, line, i) {
+    if(i > 0) {
+        return false;
+    }
+    var request = JSON.parse(list.join("\n"));
+    if(Array.isArray(request)) {
+        request = request[0];
+    }
+    if(!request["class"]) {
+        request = {"class":"com.alibaba.tax.taxengine.req.TransRequest", ...request};
+    }
+    if(request["currency"]) {
+        request["currency"] = {"currencyCode": request["currency"]};
+    }
+    request["needSave"] = false;
+    delete request["sliceId"];
+    var lines = request["lines"];
+    if(lines && lines.length > 0) {
+        for(var n in lines) {
+            var line = lines[n];
+            if(!line["class"]) {
+                line = {"class":"com.alibaba.tax.taxengine.req.dto.BaseTransLineDTO", ...line};
+                lines[n] = line;
+            }
+        }
+    }
+    var content = jsl.format.formatJson(JSON.stringify([[request]]));
+    return content;
 }
     </script>
     <script type="text/javascript">
@@ -273,25 +348,18 @@ function beautify(list, line, i) {
             styleActiveLine: true,
             indentUnit:4
           });
-        editor1.setValue($jw.readStorage(storageKey1) ||'AAA{{line}}BBB');
+        editor1.setValue($jw.readStorage(storageKey1) ||'${line}');
         editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
             mode: "text/plain",
             lineNumbers: true,
             styleActiveLine: true,
             indentUnit:4
           });
-        editor0.on('change', function(instance, changeObj) {
-            editorChanged();
-            $('#btnCopy').hide();
-        });
-        editor1.on('change', function(instance, changeObj) {
-            editorChanged();
-        });
         
         $('input[name=method]').click(function(e){
             var $that = $(this);
             if($that.val() == "TEMPLATE") {
-                editor1.setValue("{{i}}.{{line}}");
+                editor1.setValue("${line}");
             } else{
                 editor1.setValue("function beautify(list, line, i) {\n    return line;\n}");
             }
@@ -324,6 +392,18 @@ function beautify(list, line, i) {
             $("input[name=method][value='FUNCTION']").prop("checked", "checked");
             editor1.setValue($('#template_swagger').text().trim());
         });
+        $('#btnAvg').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue($('#template_avg').text().trim());
+        });
+        $('#btnResultMap').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue($('#template_result_map').text().trim());
+        });
+        $('#btnTax').click(function(e){
+            $("input[name=method][value='FUNCTION']").prop("checked", "checked");
+            editor1.setValue($('#template_tax').text().trim());
+        });
 
 
         $('#btnTemplate').click(function(e){
@@ -334,34 +414,37 @@ function beautify(list, line, i) {
             if(!content0) {
                 editor2.setValue('');
             } else if(!content1){
-                bootbox.alert('请设置模板！例如"AAA{{line}}BBB"');
+                bootbox.alert('请设置模板！例如"${i}${line}"');
             } else {
                 var list2 = [];
                 var list0 = content0.split('\n');
                 var len = list0.length;
                 var line;
-                var tpl = content1.replaceAll('\s*\n+\s*','');
-                
+                var args;
                 var method = $('input[name=method]:checked').val();
-                    if(method == "TEMPLATE") {
-                        for(var i = 0;i < len; i++) {
-                            line = list0[i];
-                            list2.push(tpl.replaceAll("{{line}}",line).replaceAll("{{i}}",(i)));
-                        }
-                    } else{
-                        try {
-                            var func = content1;
-                            eval(func);
-                        } catch (ex) {
-                            bootbox.alert("函数编译失败!");
-                            return false;
-                        }
-                        for(var i = 0;i < len; i++) {
-                            line = list0[i];
-                            list2.push(beautify(list0, line, i));
-                        }
+                if(method == "TEMPLATE") {
+                    for(var i = 0;i < len; i++) {
+                        line = list0[i];
+                        args = line.trim().split(/\s{1,}/g)
+                        list2.push(content1.render({'line': line, 'i':i, 'args':args}));
                     }
-                
+                } else{
+                    try {
+                        var func = content1;
+                        eval(func);
+                    } catch (ex) {
+                        bootbox.alert("函数编译失败!");
+                        return false;
+                    }
+                    for(var i = 0;i < len; i++) {
+                        line = list0[i];
+                        line = beautify(list0, line, i);
+                        if(line === false) {
+                            continue;
+                        }
+                        list2.push(line);
+                    }
+                }
                 editor2.setValue(list2.join('\n'));
             }
             $jw.saveStorage(storageKey0, content0);
@@ -392,6 +475,10 @@ function beautify(list, line, i) {
         });
         $('#btnDesc0').click(function(e){
             sort(editor0, false);
+            $jw.saveStorage(storageKey0, editor0.getValue());
+        });
+        $('#btnReverse').click(function(e){
+            reverse(editor0);
             $jw.saveStorage(storageKey0, editor0.getValue());
         });
         $('#btnCopy').click(function(e){
@@ -441,6 +528,16 @@ function beautify(list, line, i) {
         } else {
             editCtrl.setValue(list.sort(isAsc ? stringAsc : stringDesc).join('\n'));
         }
+    }
+
+    function reverse(editCtrl) {
+        var content = editCtrl.getValue();
+        if(!content) {
+            return;
+        }
+        var list = content.split('\n');
+        list.reverse();
+        editCtrl.setValue(list.join('\n'));
     }
     
     function unique(content) {
@@ -501,38 +598,6 @@ function beautify(list, line, i) {
         return map;
     }
     
-    function editorChanged() {
-        $('#txtResultTitle').html('');
-        editor2.setValue('');
-    }
-    
-    String.prototype.endWith = function(s) {
-        if (s == null || s == "" || this.length == 0 || s.length > this.length)
-            return false;
-        if (this.substring(this.length - s.length) == s)
-            return true;
-        else
-            return false;
-        return true;
-    }
-
-    String.prototype.startWith = function(s) {
-        if (s == null || s == "" || this.length == 0 || s.length > this.length)
-            return false;
-        if (this.substr(0, s.length) == s)
-            return true;
-        else
-            return false;
-        return true;
-    }
-
-    String.prototype.replaceAll = function(s1,s2){
-        return this.replace(new RegExp(s1,"gm"),s2);
-    }
-
-    String.prototype.trim = function(){   
-         return   this.replace(/(^\s*)|(\s*$)/g,"");   
-    }
     </script>
 </body>
 
