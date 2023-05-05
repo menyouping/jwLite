@@ -3,13 +3,13 @@
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="Jay Zhang">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Jay Zhang">
 
-<link rel="Shortcut Icon" href="./favicon.ico">
+    <link rel="Shortcut Icon" href="./favicon.ico">
 
     <title>Jw Labs-集合</title>
 
@@ -22,12 +22,24 @@
     <!-- Custom Fonts -->
     <link href="./resources/font-jw/style.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./resources/plugin/codemirror/lib/codemirror.min.css">
-    
+
     <style type="text/css">
-    .btn-operation {
-       margin: 10px 10px;
-       width: 80px;
-    }
+        .btn-operation {
+            margin: 10px 10px;
+            width: 80px;
+        }
+
+        @media screen and (max-height:1080px) {
+            .CodeMirror {
+                height: 735px;
+            }
+        }
+
+        @media screen and (max-height:800px) {
+            .CodeMirror {
+                height: 550px;
+            }
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -45,11 +57,9 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span> <span
-                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                        class="icon-bar"></span>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span
+                        class="icon-bar"></span> <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="./index.html">Jw Labs</a>
             </div>
@@ -85,22 +95,23 @@
                     </div>
                     <div class="col-md-5 col-lg-5">
                         <label><span id="txtResultTitle"></span></label>
-						<button id="btnCopy" class="btn btn-danger" >复制到A</button>
+                        <button id="btnCopy" class="btn btn-danger">复制到A</button>
                     </div>
                 </div>
                 <!-- /.row -->
                 <div class="row" style="padding-top:10px;">
-                    <div class="col-md-3 col-lg-3" >
+                    <div class="col-md-3 col-lg-3">
                         <textarea id="code0" name="code0" style="display: none;"></textarea>
                     </div>
-                    <div class="col-md-3 col-lg-3" >
+                    <div class="col-md-3 col-lg-3">
                         <textarea id="code1" name="code1" style="display: none;"></textarea>
                     </div>
-                    <div class="col-md-1 col-lg-1" >
+                    <div class="col-md-1 col-lg-1">
                         <div style="margin-top:120px;">
                             <button id="btnSubtract" class="btn btn-success btn-operation">A - B</button>
                             <button id="btnSubtract2" class="btn btn-success btn-operation">B - A</button>
-							<button title="将B中的K/V覆盖到A中，得到结果" id="btnMerge" class="btn btn-warning btn-operation">A合并B</button>
+                            <button title="将B中的K/V覆盖到A中，得到结果" id="btnMerge"
+                                class="btn btn-warning btn-operation">A合并B</button>
                         </div>
                     </div>
                     <div class="col-md-5 col-lg-5">
@@ -128,120 +139,120 @@
     <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
     <script src="./resources/js/jw.js"></script>
     <script type="text/javascript">
-    var editor0, editor1, editor2;
-    var storageKey0 = 'set.edit0',storageKey1 = 'set.edit1';
-    $(function(){
-        $("#menuJSONCompare").addClass("active");
-        editor0 = CodeMirror.fromTextArea(document.getElementById("code0"), {
-            mode: "text/plain",
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        editor0.setValue($jw.readStorage(storageKey0) ||'');
-        editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
-            mode: "text/plain",
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        editor1.setValue($jw.readStorage(storageKey1) ||'');
-        editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
-            mode: "text/plain",
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        
-        $('#btnSubtract').click(function(e){
-            $('#txtResultTitle').html('A - B');
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            var left = JSON.parse(content0);
-			var right = JSON.parse(content1);
-			var result = {};
-			for(var key in left) {
-				if(right.hasOwnProperty(key)) {
-					if(right[key] != left[key]) {
-						result[key] = left[key];
-					}
-				} else {
-					result[key] = left[key];
-				}
-			}
-			var content = jsonFormat(JSON.stringify(result));
-			editor2.setValue(content);
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
-        });
-        $('#btnSubtract2').click(function(e){
-            $('#txtResultTitle').html('B - A');
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            var left = JSON.parse(content0);
-			var right = JSON.parse(content1);
-			var result = {};
-			for(var key in right) {
-				if(left.hasOwnProperty(key)) {
-					if(right[key] != left[key]) {
-						result[key] = right[key];
-					}
-				} else {
-					result[key] = right[key];
-				}
-			}
-			var content = jsonFormat(JSON.stringify(result));
-			editor2.setValue(content);
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
+        var editor0, editor1, editor2;
+        var storageKey0 = 'set.edit0', storageKey1 = 'set.edit1';
+        $(function () {
+            $("#menuJSONCompare").addClass("active");
+            editor0 = CodeMirror.fromTextArea(document.getElementById("code0"), {
+                mode: "text/plain",
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+            editor0.setValue($jw.readStorage(storageKey0) || '');
+            editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
+                mode: "text/plain",
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+            editor1.setValue($jw.readStorage(storageKey1) || '');
+            editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
+                mode: "text/plain",
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+
+            $('#btnSubtract').click(function (e) {
+                $('#txtResultTitle').html('A - B');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                var left = JSON.parse(content0);
+                var right = JSON.parse(content1);
+                var result = {};
+                for (var key in left) {
+                    if (right.hasOwnProperty(key)) {
+                        if (right[key] != left[key]) {
+                            result[key] = left[key];
+                        }
+                    } else {
+                        result[key] = left[key];
+                    }
+                }
+                var content = jsonFormat(JSON.stringify(result));
+                editor2.setValue(content);
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+            $('#btnSubtract2').click(function (e) {
+                $('#txtResultTitle').html('B - A');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                var left = JSON.parse(content0);
+                var right = JSON.parse(content1);
+                var result = {};
+                for (var key in right) {
+                    if (left.hasOwnProperty(key)) {
+                        if (right[key] != left[key]) {
+                            result[key] = right[key];
+                        }
+                    } else {
+                        result[key] = right[key];
+                    }
+                }
+                var content = jsonFormat(JSON.stringify(result));
+                editor2.setValue(content);
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+
+            $('#btnMerge').click(function (e) {
+                $('#txtResultTitle').html('A合并B');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                var left = JSON.parse(content0);
+                var right = JSON.parse(content1);
+                for (var key in right) {
+                    left[key] = right[key];
+                }
+                var content = jsonFormat(JSON.stringify(left));
+                editor2.setValue(content);
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+
+            $('#btnFormat0').click(function (e) {
+                var content = jsonFormat(editor0.getValue());
+                editor0.setValue(content);
+                $jw.saveStorage(storageKey0, content);
+            });
+            $('#btnFormat1').click(function (e) {
+                var content = jsonFormat(editor1.getValue());
+                editor1.setValue(content);
+                $jw.saveStorage(storageKey1, content);
+            });
+            $('#btnCopy').click(function (e) {
+                editor0.setValue(editor2.getValue());
+                editor2.setValue('');
+            });
         });
 
-		$('#btnMerge').click(function (e) {
-			$('#txtResultTitle').html('A合并B');
-			var content0 = editor0.getValue();
-			var content1 = editor1.getValue();
-			var left = JSON.parse(content0);
-			var right = JSON.parse(content1);
-			for (var key in right) {
-				left[key] = right[key];
-			}
-			var content = jsonFormat(JSON.stringify(left));
-			editor2.setValue(content);
-			$jw.saveStorage(storageKey0, content0);
-			$jw.saveStorage(storageKey1, content1);
-		});
-        
-        $('#btnFormat0').click(function(e){
-            var content = jsonFormat(editor0.getValue());
-            editor0.setValue(content);
-            $jw.saveStorage(storageKey0, content);
-        });
-        $('#btnFormat1').click(function(e){
-            var content = jsonFormat(editor1.getValue());
-            editor1.setValue(content);
-            $jw.saveStorage(storageKey1, content);
-        });
-        $('#btnCopy').click(function(e){
-            editor0.setValue(editor2.getValue());
-			editor2.setValue('');
-        });
-    });
-    
-    function jsonFormat(content) {
-        try {
-            if (content && !content.startsWith('{')) {
-                var index = content.indexOf('{');
-                if (index > -1) {
-                    content = content.substring(index);
+        function jsonFormat(content) {
+            try {
+                if (content && !content.startsWith('{')) {
+                    var index = content.indexOf('{');
+                    if (index > -1) {
+                        content = content.substring(index);
+                    }
                 }
+                jsl.parser.parse(content);
+                content = jsl.format.formatJson(content);
+            } catch (exp) {
+                console.log(exp.toString());
             }
-            jsl.parser.parse(content);
-            content = jsl.format.formatJson(content);
-        } catch (exp) {
-            console.log(exp.toString());
+            return content;
         }
-        return content;
-    }
 
     </script>
 </body>
