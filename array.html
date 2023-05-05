@@ -3,13 +3,13 @@
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="Jay Zhang">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Jay Zhang">
 
-<link rel="Shortcut Icon" href="./favicon.ico">
+    <link rel="Shortcut Icon" href="./favicon.ico">
 
     <title>Jw Labs-JSON数组处理</title>
 
@@ -22,12 +22,24 @@
     <!-- Custom Fonts -->
     <link href="./resources/font-jw/style.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./resources/plugin/codemirror/lib/codemirror.min.css">
-    
+
     <style type="text/css">
-    .btn-operation {
-       margin: 10px 10px;
-       width: 80px;
-    }
+        .btn-operation {
+            margin: 10px 10px;
+            width: 80px;
+        }
+
+        @media screen and (max-height:1080px) {
+            .CodeMirror {
+                height: 735px;
+            }
+        }
+
+        @media screen and (max-height:800px) {
+            .CodeMirror {
+                height: 550px;
+            }
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -45,11 +57,9 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span> <span
-                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                        class="icon-bar"></span>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span
+                        class="icon-bar"></span> <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="./index.html">Jw Labs</a>
             </div>
@@ -92,22 +102,21 @@
                 </div>
                 <!-- /.row -->
                 <div class="row" style="padding-top:10px;">
-                    <div class="col-md-3 col-lg-3" >
+                    <div class="col-md-3 col-lg-3">
                         <textarea id="code0" name="code0" style="display: none;"></textarea>
                         <div class="row" style="padding-top: 10px;">
-                            <div class="col-md-12 col-lg-12"
-                                style="margin-left: 15px; margin-right: 15px">
-                                <div id="divMsg" class="alert alert-success"
-                                    style="display: none;"></div>
+                            <div class="col-md-12 col-lg-12" style="margin-left: 15px; margin-right: 15px">
+                                <div id="divMsg" class="alert alert-success" style="display: none;"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5 col-lg-5" >
+                    <div class="col-md-5 col-lg-5">
                         <textarea id="code1" name="code1" style="display: none;"></textarea>
                     </div>
-                    <div class="col-md-1 col-lg-1" >
+                    <div class="col-md-1 col-lg-1">
                         <div style="margin-top:120px;">
-                            <button id="btnTemplate" title='A为数据源，B为模板或函数, 以模板方法处理A中的每行数据' class="btn btn-success btn-operation">执行</button>
+                            <button id="btnTemplate" title='A为数据源，B为模板或函数, 以模板方法处理A中的每行数据'
+                                class="btn btn-success btn-operation">执行</button>
                         </div>
                     </div>
                     <div class="col-md-3 col-lg-3">
@@ -138,245 +147,245 @@
     <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
     <script src="./resources/js/jw.js"></script>
     <script type="text/javascript">
-    var editor0, editor1, editor2;
-    var storageKey0 = 'tpl_json.edit0',storageKey1 = 'tpl_json.edit1', tplMethod = 'tpl_json.method';
-    $(function(){
-        $("#menuArray").addClass("active");
-        
-        if($jw.readStorage(tplMethod)) {
-            $("input[name=method][value='" + $jw.readStorage(tplMethod) + "']").prop("checked", "checked");
-        }
-        
-        editor0 = CodeMirror.fromTextArea(document.getElementById("code0"), {
+        var editor0, editor1, editor2;
+        var storageKey0 = 'tpl_json.edit0', storageKey1 = 'tpl_json.edit1', tplMethod = 'tpl_json.method';
+        $(function () {
+            $("#menuArray").addClass("active");
+
+            if ($jw.readStorage(tplMethod)) {
+                $("input[name=method][value='" + $jw.readStorage(tplMethod) + "']").prop("checked", "checked");
+            }
+
+            editor0 = CodeMirror.fromTextArea(document.getElementById("code0"), {
                 mode: "application/json",
                 matchBrackets: true,
                 autoCloseBrackets: true,
                 lineNumbers: true,
                 styleActiveLine: true,
-                indentUnit:4
-              });
+                indentUnit: 4
+            });
 
-        editor0.setValue($jw.readStorage(storageKey0) ||'[\n   {\n       "key":"aaa",\n       "value":123\n    }\n]');
-        editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
-            mode: "application/json",
-            matchBrackets: true,
-            autoCloseBrackets: true,
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        editor1.setValue($jw.readStorage(storageKey1) ||'function beautify(item, i) {\n    // 数组第i个对象item，可以直接操作item，返回item，也可以返回新的队形\n    return item;\n}');
-        editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
-            mode: "application/json",
-            matchBrackets: true,
-            autoCloseBrackets: true,
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        editor0.on('change', function(instance, changeObj) {
-            editorChanged();
-            $('#btnCopy').hide();
-        });
-        editor1.on('change', function(instance, changeObj) {
-            editorChanged();
-        });
+            editor0.setValue($jw.readStorage(storageKey0) || '[\n   {\n       "key":"aaa",\n       "value":123\n    }\n]');
+            editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
+                mode: "application/json",
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+            editor1.setValue($jw.readStorage(storageKey1) || 'function beautify(item, i) {\n    // 数组第i个对象item，可以直接操作item，返回item，也可以返回新的队形\n    return item;\n}');
+            editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
+                mode: "application/json",
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+            editor0.on('change', function (instance, changeObj) {
+                editorChanged();
+                $('#btnCopy').hide();
+            });
+            editor1.on('change', function (instance, changeObj) {
+                editorChanged();
+            });
 
-        $('#btnGo').click(
-            function(e) {
-                try {
-                    var content = editor0.getValue();
-                    if(content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
-                        content = content.substring(1, content.length - 1);
+            $('#btnGo').click(
+                function (e) {
+                    try {
+                        var content = editor0.getValue();
+                        if (content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
+                            content = content.substring(1, content.length - 1);
+                        }
+                        jsl.parser.parse(content);
+                        content = jsl.format.formatJson(content);
+                        editor0.setValue(content);
+                        $('#divMsg').removeClass('alert-danger')
+                            .addClass('alert-success')
+                            .html('JSON is valid.')
+                            .show();
+                        $jw.saveStorage(storageKey0, content);
+                    } catch (exp) {
+                        var msg = exp.toString().replace(/\n/g, "<br>");
+                        $('#divMsg').removeClass('alert-success')
+                            .addClass('alert-danger')
+                            .html(msg)
+                            .show();
                     }
-                    jsl.parser.parse(content);
-                    content = jsl.format.formatJson(content);
-                    editor0.setValue(content);
-                    $('#divMsg').removeClass('alert-danger')
-                        .addClass('alert-success')
-                        .html('JSON is valid.')
-                        .show();
-                    $jw.saveStorage(storageKey0, content);
-                } catch (exp) {
-                    var msg = exp.toString().replace(/\n/g, "<br>");
-                    $('#divMsg').removeClass('alert-success')
-                        .addClass('alert-danger')
-                        .html(msg)
-                        .show();
+                });
+
+            $('input[name=method]').click(function (e) {
+                var $that = $(this);
+                if ($that.val() == "handle") {
+                    editor1.setValue('function beautify(item, i) {\n    // 数组第i个对象item，可以直接操作item，返回item，也可以返回新的队形\n    return item;\n}');
+                } else if ($that.val() == "filter") {
+                    editor1.setValue('function beautify(item, i) {\n    // 数组第i个对象item，返回true保留, false过滤\n    return true;\n}');
+                } else if ($that.val() == "sort") {
+                    editor1.setValue('function beautify(a, b) {\n    // 数组的对象a,b, 返回比较结果\n    return 1;\n}');
                 }
             });
-        
-        $('input[name=method]').click(function(e){
-            var $that = $(this);
-            if($that.val() == "handle") {
-                editor1.setValue('function beautify(item, i) {\n    // 数组第i个对象item，可以直接操作item，返回item，也可以返回新的队形\n    return item;\n}');
-            } else if($that.val() == "filter"){
-                editor1.setValue('function beautify(item, i) {\n    // 数组第i个对象item，返回true保留, false过滤\n    return true;\n}');
-            } else if($that.val() == "sort"){
-                editor1.setValue('function beautify(a, b) {\n    // 数组的对象a,b, 返回比较结果\n    return 1;\n}');
-            }
-        });
-        $('#btnTemplate').click(function(e){
-            $('#txtResultTitle').html('结果');
-            $('#btnCopy').show();
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            if(!content0) {
-                editor2.setValue('');
-            } else if(!content1){
-                bootbox.alert('请设置模板！例如"AAA{{line}}BBB"');
-            } else {
-                var list2 = [];
-                var list0 = JSON.parse(content0);
-                if(!$.isArray(list0)) {
-                    list0=[list0];
-                }
-                var len = list0.length;
-                var item;
-                var tpl = content1.replaceAll('\s*\n+\s*','');
-                
-                var method = $('input[name=method]:checked').val();
-                if(method == "handle") {
-                    try {
-                        var func = content1;
-                        eval(func);
-                    } catch (ex) {
-                        bootbox.alert("函数编译失败!");
-                        return false;
+            $('#btnTemplate').click(function (e) {
+                $('#txtResultTitle').html('结果');
+                $('#btnCopy').show();
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                if (!content0) {
+                    editor2.setValue('');
+                } else if (!content1) {
+                    bootbox.alert('请设置模板！例如"AAA{{line}}BBB"');
+                } else {
+                    var list2 = [];
+                    var list0 = JSON.parse(content0);
+                    if (!$.isArray(list0)) {
+                        list0 = [list0];
                     }
-                    for(var i = 0;i < len; i++) {
-                        item = list0[i];
-                        list2.push(beautify(item, i + 1));
-                    }
-                } else if(method == "filter"){
-                    try {
-                        var func = content1;
-                        eval(func);
-                    } catch (ex) {
-                        bootbox.alert("函数编译失败!");
-                        return false;
-                    }
-                    for(var i = 0;i < len; i++) {
-                        item = list0[i];
-                        if(beautify(item, i + 1)) {
-                            list2.push(item);
+                    var len = list0.length;
+                    var item;
+                    var tpl = content1.replaceAll('\s*\n+\s*', '');
+
+                    var method = $('input[name=method]:checked').val();
+                    if (method == "handle") {
+                        try {
+                            var func = content1;
+                            eval(func);
+                        } catch (ex) {
+                            bootbox.alert("函数编译失败!");
+                            return false;
                         }
+                        for (var i = 0; i < len; i++) {
+                            item = list0[i];
+                            list2.push(beautify(item, i + 1));
+                        }
+                    } else if (method == "filter") {
+                        try {
+                            var func = content1;
+                            eval(func);
+                        } catch (ex) {
+                            bootbox.alert("函数编译失败!");
+                            return false;
+                        }
+                        for (var i = 0; i < len; i++) {
+                            item = list0[i];
+                            if (beautify(item, i + 1)) {
+                                list2.push(item);
+                            }
+                        }
+                    } else if (method == "sort") {
+                        try {
+                            var func = content1;
+                            eval(func);
+                        } catch (ex) {
+                            bootbox.alert("函数编译失败!");
+                            return false;
+                        }
+                        list2 = list0.slice(0);
+                        list2.sort(beautify);
                     }
-                } else if(method == "sort"){
-                    try {
-                        var func = content1;
-                        eval(func);
-                    } catch (ex) {
-                        bootbox.alert("函数编译失败!");
-                        return false;
+                    editor2.setValue(jsl.format.formatJson(JSON.stringify(list2)));
+                }
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+                $jw.saveStorage(tplMethod, $("input[name=method]:checked").val());
+            });
+            $('#btnCopy').click(function (e) {
+                editor0.setValue(editor2.getValue());
+            });
+        });
+
+        function stringAsc(a, b) {
+            return a == b ? 0 : (a > b ? 1 : -1);
+        }
+
+        function stringDesc(a, b) {
+            return -stringAsc(a, b);
+        }
+
+        function numberAsc(a, b) {
+            return parseFloat(a) - parseFloat(b);
+        }
+
+        function numberDesc(a, b) {
+            return -numberAsc(a, b);
+        }
+
+        function sort(editCtrl, isAsc) {
+            var content = editCtrl.getValue();
+            if (!content) {
+                return;
+            }
+            var list = content.split('\n');
+            var isNumber = true;
+            if (/[a-zA-Z]/.test(content)) {
+                isNumber = false;
+            } else {
+                var len = list.length;
+                var n;
+                for (var i = 0; i < len; i++) {
+                    n = list[i];
+                    if (isNaN(parseFloat(n)) || !isFinite(n)) {
+                        isNumber = false;
+                        break;
                     }
-                    list2 = list0.slice(0);
-                    list2.sort(beautify);
-                }
-                editor2.setValue(jsl.format.formatJson(JSON.stringify(list2)));
-            }
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
-            $jw.saveStorage(tplMethod, $("input[name=method]:checked").val());
-        });
-        $('#btnCopy').click(function(e){
-            editor0.setValue(editor2.getValue());
-        });
-    });
-    
-    function stringAsc(a, b) {
-        return a == b ? 0 : (a > b ? 1 : -1);
-    }
-    
-    function stringDesc(a, b) {
-        return -stringAsc(a, b);
-    }
-    
-    function numberAsc(a, b) {
-        return parseFloat(a) - parseFloat(b);
-    }
-    
-    function numberDesc(a, b) {
-        return -numberAsc(a, b);
-    }
-    
-    function sort(editCtrl, isAsc) {
-        var content = editCtrl.getValue();
-        if(!content) {
-            return;
-        }
-        var list = content.split('\n');
-        var isNumber = true;
-        if(/[a-zA-Z]/.test(content)) {
-            isNumber = false;
-        } else {
-            var len = list.length;
-            var n;
-            for(var i = 0;i<len;i++) {
-                n = list[i];
-                if(isNaN(parseFloat(n)) || !isFinite(n)) {
-                    isNumber = false;
-                    break;
                 }
             }
-        }
-        
-        if(isNumber) {
-            editCtrl.setValue(list.sort(isAsc ? numberAsc : numberDesc).join('\n'));
-        } else {
-            editCtrl.setValue(list.sort(isAsc ? stringAsc : stringDesc).join('\n'));
-        }
-    }
-    
-    function unique(content) {
-        if(!content) {
-            return content;
-        }
-        var rs = handle(content);
-        return rs.list.join('\n');
-    }
-    
-    function handle(content) {
-        if(!content) {
-            return {'list':[],'map':{}};
-        }
-        var arr = content.split('\n');
-        var map = {};
-        var len = arr.length;
-        var line;
-        var rs = [];
-        for(var i = 0;i < len; i++) {
-            line = arr[i];
-            if(line && !map.hasOwnProperty(line)) {
-                rs.push(line);
-                map[line] = 1;
+
+            if (isNumber) {
+                editCtrl.setValue(list.sort(isAsc ? numberAsc : numberDesc).join('\n'));
+            } else {
+                editCtrl.setValue(list.sort(isAsc ? stringAsc : stringDesc).join('\n'));
             }
         }
-        return {'list':rs,'map':map};
-    }
-    
-    function toMap(content) {
-        if(!content) {
-            return {};
-        }
-        var arr = content.split('\n');
-        var map = {};
-        var len = arr.length;
-        var line;
-        for(var i = 0;i < len; i++) {
-            line = arr[i];
-            if(line && !map.hasOwnProperty(line)) {
-                map[line] = 1;
+
+        function unique(content) {
+            if (!content) {
+                return content;
             }
+            var rs = handle(content);
+            return rs.list.join('\n');
         }
-        return map;
-    }
-    
-    function editorChanged() {
-        $('#txtResultTitle').html('');
-        editor2.setValue('');
-    }
-    
+
+        function handle(content) {
+            if (!content) {
+                return { 'list': [], 'map': {} };
+            }
+            var arr = content.split('\n');
+            var map = {};
+            var len = arr.length;
+            var line;
+            var rs = [];
+            for (var i = 0; i < len; i++) {
+                line = arr[i];
+                if (line && !map.hasOwnProperty(line)) {
+                    rs.push(line);
+                    map[line] = 1;
+                }
+            }
+            return { 'list': rs, 'map': map };
+        }
+
+        function toMap(content) {
+            if (!content) {
+                return {};
+            }
+            var arr = content.split('\n');
+            var map = {};
+            var len = arr.length;
+            var line;
+            for (var i = 0; i < len; i++) {
+                line = arr[i];
+                if (line && !map.hasOwnProperty(line)) {
+                    map[line] = 1;
+                }
+            }
+            return map;
+        }
+
+        function editorChanged() {
+            $('#txtResultTitle').html('');
+            editor2.setValue('');
+        }
+
     </script>
 </body>
 
