@@ -361,7 +361,7 @@ function beautify(list, line, i) {
             $('input[name=method]').click(function (e) {
                 var $that = $(this);
                 if ($that.val() == "TEMPLATE") {
-                    editor1.setValue("${line}");
+                    editor1.setValue("${line}|按照空格分割${args[0]}");
                 } else {
                     editor1.setValue("function beautify(list, line, i) {\n    return line;\n}");
                 }
