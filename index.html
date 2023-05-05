@@ -3,45 +3,46 @@
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="Jay Zhang">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Jay Zhang">
 
-<link rel="Shortcut Icon" href="./favicon.ico">
+    <link rel="Shortcut Icon" href="./favicon.ico">
 
-<title>Jw Labs-JSON</title>
+    <title>Jw Labs-JSON</title>
 
-<!-- Bootstrap Core CSS -->
-<link href="./resources/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+    <link href="./resources/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Custom CSS -->
-<link href="./resources/css/sb-admin.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="./resources/css/sb-admin.min.css" rel="stylesheet">
 
-<!-- Custom Fonts -->
-<link href="./resources/font-jw/style.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" href="./resources/plugin/codemirror/lib/codemirror.min.css">
-<style type="text/css">
-#main {
-    color: #666
-}
-@media screen and (max-height:1080px) {
-    .CodeMirror {
-        height: 735px;
-    }
-}
-
-@media screen and (max-height:800px) {
-        .CodeMirror {
-            height: 650px;
+    <!-- Custom Fonts -->
+    <link href="./resources/font-jw/style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="./resources/plugin/codemirror/lib/codemirror.min.css">
+    <style type="text/css">
+        #main {
+            color: #666
         }
-    }
-</style>
 
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
+        @media screen and (max-height:1080px) {
+            .CodeMirror {
+                height: 735px;
+            }
+        }
+
+        @media screen and (max-height:800px) {
+            .CodeMirror {
+                height: 650px;
+            }
+        }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
@@ -54,11 +55,9 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span> <span
-                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                        class="icon-bar"></span>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span
+                        class="icon-bar"></span> <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="./index.html">Jw Labs</a>
             </div>
@@ -72,7 +71,7 @@
                     <li id="menuTemplate" title="多行文本处理工具"><a href="./template.html">文本处理</a></li>
                     <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a></li>
                 </ul>
-	        </div>
+            </div>
         </div>
     </nav>
     <div id="wrapper">
@@ -81,25 +80,21 @@
             <div class="container-fluid">
                 <!-- /.row -->
                 <div class="row" style="padding-top: 10px;">
-                    <div class="col-md-12 col-lg-12"
-                        style="margin-left: 15px; margin-right: 15px">
+                    <div class="col-md-12 col-lg-12" style="margin-left: 15px; margin-right: 15px">
                         <button id="btnGo" class="btn btn-success">美化</button>
                         <button id="btnRaw" class="btn btn-default">一行</button>
                     </div>
                 </div>
                 <!-- /.row -->
                 <div class="row" style="padding-top: 10px;">
-                    <div class="col-md-12 col-lg-12"
-                        style="margin-left: 15px; margin-right: 15px">
-                             <textarea id="code" name="code" style="display: none;"></textarea>
+                    <div class="col-md-12 col-lg-12" style="margin-left: 15px; margin-right: 15px">
+                        <textarea id="code" name="code" style="display: none;"></textarea>
                     </div>
                 </div>
 
                 <div class="row" style="padding-top: 10px;">
-                    <div class="col-md-12 col-lg-12"
-                        style="margin-left: 15px; margin-right: 15px">
-                        <div id="divMsg" class="alert alert-success"
-                            style="display: none;"></div>
+                    <div class="col-md-12 col-lg-12" style="margin-left: 15px; margin-right: 15px">
+                        <div id="divMsg" class="alert alert-success" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -127,7 +122,7 @@
     <script src="./resources/js/jw.js"></script>
     <script type="text/javascript">
         var storageKey = 'json';
-        $(function() {
+        $(function () {
             $("#menuJson").addClass("active");
             var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
                 mode: "application/json",
@@ -135,18 +130,18 @@
                 autoCloseBrackets: true,
                 lineNumbers: true,
                 styleActiveLine: true,
-                indentUnit:4
-              });
+                indentUnit: 4
+            });
             editor.setValue($jw.readStorage(storageKey) || '');
-            editor.on('change', function(instance, changeObj) {
+            editor.on('change', function (instance, changeObj) {
                 hideMsg();
             });
             $('#btnGo').click(
-                function(e) {
+                function (e) {
                     try {
                         var content = editor.getValue();
-                        if(content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
-                                content = content.substring(1, content.length - 1);
+                        if (content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
+                            content = content.substring(1, content.length - 1);
                         }
                         jsl.parser.parse(content);
                         content = jsl.format.formatJson(content);
@@ -164,10 +159,10 @@
                             .show();
                     }
                 });
-            $('#btnRaw').click(function(e) {
+            $('#btnRaw').click(function (e) {
                 try {
                     var content = editor.getValue();
-                    if(content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
+                    if (content && content.length > 1 && content.indexOf("\"") == 0 && content.lastIndexOf("\"") == content.length - 1) {
                         content = content.substring(1, content.length - 1);
                     }
                     jsl.parser.parse(content);
@@ -177,7 +172,7 @@
                     hideMsg();
                 } catch (exp) {
                     var content = editor.getValue();
-                    if(content) {
+                    if (content) {
                         var lines = content.trim().split(/\s*\n\s*/g);
                         content = lines.join('');
                         content = editor.setValue(content);
@@ -198,7 +193,7 @@
 
         function hideMsg() {
             $('#divMsg').removeClass('alert-danger').removeClass('alert-success').html(
-                    '').hide();
+                '').hide();
         }
     </script>
 </body>
