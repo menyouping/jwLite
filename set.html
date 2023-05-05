@@ -67,11 +67,12 @@
             <div>
                 <ul class="nav navbar-nav">
                     <li id="menuJson" title="JSON格式化工具"><a href="./index.html">JSON</a></li>
+                    <li id="menuJSONCompare" title="JSON比较工具"><a href="./json_compare.html">JSON运算</a></li>
+                    <li id="menuArray" title="JSON数组处理工具"><a href="./array.html">JSON数组</a></li>
                     <li id="menuXml" title="XML格式化工具"><a href="./xml.html">XML</a></li>
-                    <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a></li>
-                    <li id="menuSet" title="集合处理工具"><a href="./set.html">集合</a></li>
+                    <li id="menuSet" title="集合处理工具"><a href="./set.html">集合运算</a></li>
                     <li id="menuTemplate" title="多行文本处理工具"><a href="./template.html">文本处理</a></li>
-                    <li id="menuAarray" title="JSON数组处理工具"><a href="./array.html">JSON数组</a></li>
+                    <li id="menuCompare" title="文本比较工具"><a href="./compare.html">文本比较</a></li>
                 </ul>
             </div>
         </div>
@@ -85,12 +86,14 @@
                     <div class="col-md-3 col-lg-3">
                         <label>集合A</label>
                         <button id="btnUnique0" class="btn btn-danger">去重</button>
+                        <button id="btnTrim0" class="btn btn-danger">TRIM</button>
                         <button id="btnAsc0" class="btn btn-default">升序</button>
                         <button id="btnDesc0" class="btn btn-default">降序</button>
                     </div>
                     <div class="col-md-3 col-lg-3">
                         <label>集合B</label>
                         <button id="btnUnique1" class="btn btn-danger">去重</button>
+                        <button id="btnTrim1" class="btn btn-danger">TRIM</button>
                         <button id="btnAsc1" class="btn btn-default">升序</button>
                         <button id="btnDesc1" class="btn btn-default">降序</button>
                     </div>
@@ -138,6 +141,8 @@
     <!-- Bootstrap Core JavaScript -->
     <script src="./resources/js/bootstrap.min.js"></script>
     <script src="./resources/js/bootbox.js"></script>
+    <script src="./resources/js/jsl.format.min.js"></script>
+    <script src="./resources/js/jsl.parser.min.js"></script>
     <script src="./resources/plugin/codemirror/lib/codemirror.min.js"></script>
     <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
     <script src="./resources/js/jw.js"></script>
@@ -166,12 +171,7 @@
             styleActiveLine: true,
             indentUnit:4
           });
-        editor0.on('change', function(instance, changeObj) {
-            editorChanged();
-        });
-        editor1.on('change', function(instance, changeObj) {
-            editorChanged();
-        });
+        
         $('#btnAll').click(function(e){
             $('#txtResultTitle').html('A ∪ B');
             var content0 = editor0.getValue();
@@ -275,6 +275,18 @@
             editor1.setValue(rs);
             $jw.saveStorage(storageKey1, rs);
         });
+        $('#btnTrim0').click(function(e){
+            var content0 = editor0.getValue();
+            var rs = myTrim(content0);
+            editor0.setValue(rs);
+            $jw.saveStorage(storageKey0, rs);
+        });
+        $('#btnTrim1').click(function(e){
+            var content1 = editor1.getValue();
+            var rs = myTrim(content1);
+            editor1.setValue(rs);
+            $jw.saveStorage(storageKey1, rs);
+        });
         $('#btnAsc0').click(function(e){
             sort(editor0, true);
             $jw.saveStorage(storageKey0, editor0.getValue());
@@ -370,6 +382,26 @@
         return {'list':rs,'map':map};
     }
     
+    function myTrim(content) {
+        if(!content) {
+            return content;
+        }
+        if(!content) {
+            return {'list':[],'map':{}};
+        }
+        var arr = content.split('\n');
+        var len = arr.length;
+        var line;
+        var rs = [];
+        for(var i = 0;i < len; i++) {
+            line = arr[i];
+            if(line) {
+                rs.push(line.trim());
+            }
+        }
+        return rs.join('\n');
+    }
+
     function toMap(content) {
         if(!content) {
             return {};
@@ -385,13 +417,6 @@
             }
         }
         return map;
-    }
-    
-    function editorChanged() {
-        $('#txtResultTitle').html('');
-        editor2.setValue('');
-        $('#btnAsc2').hide();
-        $('#btnDesc2').hide();
     }
 
     </script>
