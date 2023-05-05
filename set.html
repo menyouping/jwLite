@@ -3,13 +3,13 @@
 
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="author" content="Jay Zhang">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Jay Zhang">
 
-<link rel="Shortcut Icon" href="./favicon.ico">
+    <link rel="Shortcut Icon" href="./favicon.ico">
 
     <title>Jw Labs-集合</title>
 
@@ -22,12 +22,24 @@
     <!-- Custom Fonts -->
     <link href="./resources/font-jw/style.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="./resources/plugin/codemirror/lib/codemirror.min.css">
-    
+
     <style type="text/css">
-    .btn-operation {
-       margin: 10px 10px;
-       width: 80px;
-    }
+        .btn-operation {
+            margin: 10px 10px;
+            width: 80px;
+        }
+
+        @media screen and (max-height:1080px) {
+            .CodeMirror {
+                height: 735px;
+            }
+        }
+
+        @media screen and (max-height:800px) {
+            .CodeMirror {
+                height: 550px;
+            }
+        }
     </style>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -45,11 +57,9 @@
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target=".navbar-ex1-collapse">
-                    <span class="sr-only">Toggle navigation</span> <span
-                        class="icon-bar"></span> <span class="icon-bar"></span> <span
-                        class="icon-bar"></span>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span
+                        class="icon-bar"></span> <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="./index.html">Jw Labs</a>
             </div>
@@ -97,13 +107,13 @@
                 </div>
                 <!-- /.row -->
                 <div class="row" style="padding-top:10px;">
-                    <div class="col-md-3 col-lg-3" >
+                    <div class="col-md-3 col-lg-3">
                         <textarea id="code0" name="code0" style="display: none;"></textarea>
                     </div>
-                    <div class="col-md-3 col-lg-3" >
+                    <div class="col-md-3 col-lg-3">
                         <textarea id="code1" name="code1" style="display: none;"></textarea>
                     </div>
-                    <div class="col-md-1 col-lg-1" >
+                    <div class="col-md-1 col-lg-1">
                         <div style="margin-top:120px;">
                             <button id="btnAll" class="btn btn-success btn-operation">A ∪ B</button><br>
                             <button id="btnOverlap" class="btn btn-primary btn-operation">A ∩ B</button><br>
@@ -136,277 +146,277 @@
     <script src="./resources/plugin/codemirror/addon/selection/active-line.min.js"></script>
     <script src="./resources/js/jw.js"></script>
     <script type="text/javascript">
-    var editor0, editor1, editor2;
-    var storageKey0 = 'set.edit0',storageKey1 = 'set.edit1';
-    $(function(){
-        $("#menuSet").addClass("active");
-        editor0 = CodeMirror.fromTextArea(document.getElementById("code0"), {
-            mode: "text/plain",
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        editor0.setValue($jw.readStorage(storageKey0) ||'');
-        editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
-            mode: "text/plain",
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        editor1.setValue($jw.readStorage(storageKey1) ||'');
-        editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
-            mode: "text/plain",
-            lineNumbers: true,
-            styleActiveLine: true,
-            indentUnit:4
-          });
-        
-        $('#btnAll').click(function(e){
-            $('#txtResultTitle').html('A ∪ B');
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            var rs = handle(content0 + '\n' + content1);
-            editor2.setValue(rs.list.join('\n'));
-            $('#btnAsc2').show();
-            $('#btnDesc2').show();
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
-        });
-        $('#btnOverlap').click(function(e){
-            $('#txtResultTitle').html('A ∩ B');
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            if(!content0 || !content1) {
-                editor2.setValue('');
-            } else {
-                var rs0 = handle(content0);
-                var list2 = [];
-                var map = rs0.map;
-                var list1 = content1.split('\n');
-                var len = list1.length;
-                var line;
-                for(var i = 0;i < len; i++) {
-                    line = list1[i];
-                    if(line && map.hasOwnProperty(line)) {
-                        list2.push(line);
-                    }
-                }
-                editor2.setValue(list2.join('\n'));
-            }
-            $('#btnAsc2').show();
-            $('#btnDesc2').show();
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
-        });
-        $('#btnSubtract').click(function(e){
-            $('#txtResultTitle').html('A - B');
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            if(!content0) {
-                editor2.setValue('');
-            } else if(!content1){
-                editor2.setValue(content0);
-            } else {
-                var list2 = [];
-                var map = toMap(content1);
-                var list0 = content0.split('\n');
-                var len = list0.length;
-                var line;
-                for(var i = 0;i < len; i++) {
-                    line = list0[i];
-                    if(line && !map.hasOwnProperty(line)) {
-                        list2.push(line);
-                    }
-                }
-                editor2.setValue(list2.join('\n'));
-            }
-            $('#btnAsc2').show();
-            $('#btnDesc2').show();
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
-        });
-        $('#btnSubtract2').click(function(e){
-            $('#txtResultTitle').html('B - A');
-            var content0 = editor0.getValue();
-            var content1 = editor1.getValue();
-            if(!content0) {
-                editor2.setValue('');
-            } else if(!content1){
-                editor2.setValue(content0);
-            } else {
-                var list2 = [];
-                var map = toMap(content0);
-                var list0 = content1.split('\n');
-                var len = list0.length;
-                var line;
-                for(var i = 0;i < len; i++) {
-                    line = list0[i];
-                    if(line && !map.hasOwnProperty(line)) {
-                        list2.push(line);
-                    }
-                }
-                editor2.setValue(list2.join('\n'));
-            }
-            $('#btnAsc2').show();
-            $('#btnDesc2').show();
-            $jw.saveStorage(storageKey0, content0);
-            $jw.saveStorage(storageKey1, content1);
-        });
-        $('#btnUnique0').click(function(e){
-            var content0 = editor0.getValue();
-            var rs = unique(content0);
-            editor0.setValue(rs);
-            $jw.saveStorage(storageKey0, rs);
-        });
-        $('#btnUnique1').click(function(e){
-            var content1 = editor1.getValue();
-            var rs = unique(content1);
-            editor1.setValue(rs);
-            $jw.saveStorage(storageKey1, rs);
-        });
-        $('#btnTrim0').click(function(e){
-            var content0 = editor0.getValue();
-            var rs = myTrim(content0);
-            editor0.setValue(rs);
-            $jw.saveStorage(storageKey0, rs);
-        });
-        $('#btnTrim1').click(function(e){
-            var content1 = editor1.getValue();
-            var rs = myTrim(content1);
-            editor1.setValue(rs);
-            $jw.saveStorage(storageKey1, rs);
-        });
-        $('#btnAsc0').click(function(e){
-            sort(editor0, true);
-            $jw.saveStorage(storageKey0, editor0.getValue());
-        });
-        $('#btnDesc0').click(function(e){
-            sort(editor0, false);
-            $jw.saveStorage(storageKey0, editor0.getValue());
-        });
-        $('#btnAsc1').click(function(e){
-            sort(editor1, true);
-            $jw.saveStorage(storageKey1, editor1.getValue());
-        });
-        $('#btnDesc1').click(function(e){
-            sort(editor1, false);
-            $jw.saveStorage(storageKey1, editor1.getValue());
-        });
-        $('#btnAsc2').click(function(e){
-            sort(editor2, true);
-        });
-        $('#btnDesc2').click(function(e){
-            sort(editor2, false);
-        });
-    });
-    
-    function stringAsc(a, b) {
-        return a == b ? 0 : (a > b ? 1 : -1);
-    }
-    
-    function stringDesc(a, b) {
-        return -stringAsc(a, b);
-    }
-    
-    function numberAsc(a, b) {
-        return parseFloat(a) - parseFloat(b);
-    }
-    
-    function numberDesc(a, b) {
-        return -numberAsc(a, b);
-    }
-    
-    function sort(editCtrl, isAsc) {
-        var content = editCtrl.getValue();
-        if(!content) {
-            return;
-        }
-        var list = content.split('\n');
-        var isNumber = true;
-        if(/[a-zA-Z]/.test(content)) {
-            isNumber = false;
-        } else {
-            var len = list.length;
-            var n;
-            for(var i = 0;i<len;i++) {
-                n = list[i];
-                if(isNaN(parseFloat(n)) || !isFinite(n)) {
-                    isNumber = false;
-                    break;
-                }
-            }
-        }
-        
-        if(isNumber) {
-            editCtrl.setValue(list.sort(isAsc ? numberAsc : numberDesc).join('\n'));
-        } else {
-            editCtrl.setValue(list.sort(isAsc ? stringAsc : stringDesc).join('\n'));
-        }
-    }
-    
-    function unique(content) {
-        if(!content) {
-            return content;
-        }
-        var rs = handle(content);
-        return rs.list.join('\n');
-    }
-    
-    function handle(content) {
-        if(!content) {
-            return {'list':[],'map':{}};
-        }
-        var arr = content.split('\n');
-        var map = {};
-        var len = arr.length;
-        var line;
-        var rs = [];
-        for(var i = 0;i < len; i++) {
-            line = arr[i];
-            if(line && !map.hasOwnProperty(line)) {
-                rs.push(line);
-                map[line] = 1;
-            }
-        }
-        return {'list':rs,'map':map};
-    }
-    
-    function myTrim(content) {
-        if(!content) {
-            return content;
-        }
-        if(!content) {
-            return {'list':[],'map':{}};
-        }
-        var arr = content.split('\n');
-        var len = arr.length;
-        var line;
-        var rs = [];
-        for(var i = 0;i < len; i++) {
-            line = arr[i];
-            if(line) {
-                rs.push(line.trim());
-            }
-        }
-        return rs.join('\n');
-    }
+        var editor0, editor1, editor2;
+        var storageKey0 = 'set.edit0', storageKey1 = 'set.edit1';
+        $(function () {
+            $("#menuSet").addClass("active");
+            editor0 = CodeMirror.fromTextArea(document.getElementById("code0"), {
+                mode: "text/plain",
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+            editor0.setValue($jw.readStorage(storageKey0) || '');
+            editor1 = CodeMirror.fromTextArea(document.getElementById("code1"), {
+                mode: "text/plain",
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
+            editor1.setValue($jw.readStorage(storageKey1) || '');
+            editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {
+                mode: "text/plain",
+                lineNumbers: true,
+                styleActiveLine: true,
+                indentUnit: 4
+            });
 
-    function toMap(content) {
-        if(!content) {
-            return {};
+            $('#btnAll').click(function (e) {
+                $('#txtResultTitle').html('A ∪ B');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                var rs = handle(content0 + '\n' + content1);
+                editor2.setValue(rs.list.join('\n'));
+                $('#btnAsc2').show();
+                $('#btnDesc2').show();
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+            $('#btnOverlap').click(function (e) {
+                $('#txtResultTitle').html('A ∩ B');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                if (!content0 || !content1) {
+                    editor2.setValue('');
+                } else {
+                    var rs0 = handle(content0);
+                    var list2 = [];
+                    var map = rs0.map;
+                    var list1 = content1.split('\n');
+                    var len = list1.length;
+                    var line;
+                    for (var i = 0; i < len; i++) {
+                        line = list1[i];
+                        if (line && map.hasOwnProperty(line)) {
+                            list2.push(line);
+                        }
+                    }
+                    editor2.setValue(list2.join('\n'));
+                }
+                $('#btnAsc2').show();
+                $('#btnDesc2').show();
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+            $('#btnSubtract').click(function (e) {
+                $('#txtResultTitle').html('A - B');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                if (!content0) {
+                    editor2.setValue('');
+                } else if (!content1) {
+                    editor2.setValue(content0);
+                } else {
+                    var list2 = [];
+                    var map = toMap(content1);
+                    var list0 = content0.split('\n');
+                    var len = list0.length;
+                    var line;
+                    for (var i = 0; i < len; i++) {
+                        line = list0[i];
+                        if (line && !map.hasOwnProperty(line)) {
+                            list2.push(line);
+                        }
+                    }
+                    editor2.setValue(list2.join('\n'));
+                }
+                $('#btnAsc2').show();
+                $('#btnDesc2').show();
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+            $('#btnSubtract2').click(function (e) {
+                $('#txtResultTitle').html('B - A');
+                var content0 = editor0.getValue();
+                var content1 = editor1.getValue();
+                if (!content0) {
+                    editor2.setValue('');
+                } else if (!content1) {
+                    editor2.setValue(content0);
+                } else {
+                    var list2 = [];
+                    var map = toMap(content0);
+                    var list0 = content1.split('\n');
+                    var len = list0.length;
+                    var line;
+                    for (var i = 0; i < len; i++) {
+                        line = list0[i];
+                        if (line && !map.hasOwnProperty(line)) {
+                            list2.push(line);
+                        }
+                    }
+                    editor2.setValue(list2.join('\n'));
+                }
+                $('#btnAsc2').show();
+                $('#btnDesc2').show();
+                $jw.saveStorage(storageKey0, content0);
+                $jw.saveStorage(storageKey1, content1);
+            });
+            $('#btnUnique0').click(function (e) {
+                var content0 = editor0.getValue();
+                var rs = unique(content0);
+                editor0.setValue(rs);
+                $jw.saveStorage(storageKey0, rs);
+            });
+            $('#btnUnique1').click(function (e) {
+                var content1 = editor1.getValue();
+                var rs = unique(content1);
+                editor1.setValue(rs);
+                $jw.saveStorage(storageKey1, rs);
+            });
+            $('#btnTrim0').click(function (e) {
+                var content0 = editor0.getValue();
+                var rs = myTrim(content0);
+                editor0.setValue(rs);
+                $jw.saveStorage(storageKey0, rs);
+            });
+            $('#btnTrim1').click(function (e) {
+                var content1 = editor1.getValue();
+                var rs = myTrim(content1);
+                editor1.setValue(rs);
+                $jw.saveStorage(storageKey1, rs);
+            });
+            $('#btnAsc0').click(function (e) {
+                sort(editor0, true);
+                $jw.saveStorage(storageKey0, editor0.getValue());
+            });
+            $('#btnDesc0').click(function (e) {
+                sort(editor0, false);
+                $jw.saveStorage(storageKey0, editor0.getValue());
+            });
+            $('#btnAsc1').click(function (e) {
+                sort(editor1, true);
+                $jw.saveStorage(storageKey1, editor1.getValue());
+            });
+            $('#btnDesc1').click(function (e) {
+                sort(editor1, false);
+                $jw.saveStorage(storageKey1, editor1.getValue());
+            });
+            $('#btnAsc2').click(function (e) {
+                sort(editor2, true);
+            });
+            $('#btnDesc2').click(function (e) {
+                sort(editor2, false);
+            });
+        });
+
+        function stringAsc(a, b) {
+            return a == b ? 0 : (a > b ? 1 : -1);
         }
-        var arr = content.split('\n');
-        var map = {};
-        var len = arr.length;
-        var line;
-        for(var i = 0;i < len; i++) {
-            line = arr[i];
-            if(line && !map.hasOwnProperty(line)) {
-                map[line] = 1;
+
+        function stringDesc(a, b) {
+            return -stringAsc(a, b);
+        }
+
+        function numberAsc(a, b) {
+            return parseFloat(a) - parseFloat(b);
+        }
+
+        function numberDesc(a, b) {
+            return -numberAsc(a, b);
+        }
+
+        function sort(editCtrl, isAsc) {
+            var content = editCtrl.getValue();
+            if (!content) {
+                return;
+            }
+            var list = content.split('\n');
+            var isNumber = true;
+            if (/[a-zA-Z]/.test(content)) {
+                isNumber = false;
+            } else {
+                var len = list.length;
+                var n;
+                for (var i = 0; i < len; i++) {
+                    n = list[i];
+                    if (isNaN(parseFloat(n)) || !isFinite(n)) {
+                        isNumber = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isNumber) {
+                editCtrl.setValue(list.sort(isAsc ? numberAsc : numberDesc).join('\n'));
+            } else {
+                editCtrl.setValue(list.sort(isAsc ? stringAsc : stringDesc).join('\n'));
             }
         }
-        return map;
-    }
+
+        function unique(content) {
+            if (!content) {
+                return content;
+            }
+            var rs = handle(content);
+            return rs.list.join('\n');
+        }
+
+        function handle(content) {
+            if (!content) {
+                return { 'list': [], 'map': {} };
+            }
+            var arr = content.split('\n');
+            var map = {};
+            var len = arr.length;
+            var line;
+            var rs = [];
+            for (var i = 0; i < len; i++) {
+                line = arr[i];
+                if (line && !map.hasOwnProperty(line)) {
+                    rs.push(line);
+                    map[line] = 1;
+                }
+            }
+            return { 'list': rs, 'map': map };
+        }
+
+        function myTrim(content) {
+            if (!content) {
+                return content;
+            }
+            if (!content) {
+                return { 'list': [], 'map': {} };
+            }
+            var arr = content.split('\n');
+            var len = arr.length;
+            var line;
+            var rs = [];
+            for (var i = 0; i < len; i++) {
+                line = arr[i];
+                if (line) {
+                    rs.push(line.trim());
+                }
+            }
+            return rs.join('\n');
+        }
+
+        function toMap(content) {
+            if (!content) {
+                return {};
+            }
+            var arr = content.split('\n');
+            var map = {};
+            var len = arr.length;
+            var line;
+            for (var i = 0; i < len; i++) {
+                line = arr[i];
+                if (line && !map.hasOwnProperty(line)) {
+                    map[line] = 1;
+                }
+            }
+            return map;
+        }
 
     </script>
 </body>
